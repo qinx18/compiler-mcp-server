@@ -1,0 +1,34 @@
+name: OpenHands Resolver
+
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+
+jobs:
+  resolver:
+    if: |
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'fix-me')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@openhands-agent'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install OpenHands Resolver
+        run: pip install openhands-resolver
+      
+      - name: Run OpenHands Resolver
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+        run: |
+          python -m openhands_resolver.resolve_issue \
+            --issue-number ${{ github.event.issue.number }} \
+            --repo ${{ github.repository }}
