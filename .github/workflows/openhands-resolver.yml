@@ -14,15 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Install OpenHands Resolver
         run: pip install openhands-resolver
-      
+
       - name: Run OpenHands Resolver
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
