@@ -12,8 +12,19 @@ An intelligent compiler server that provides detailed vectorization analysis and
 ## Installation
 
 ```bash
-pip install fastmcp asyncio subprocess
+pip install -r requirements.txt
 ```
+
+## Development Setup
+
+For contributors, install pre-commit hooks for code quality:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development guidelines.
 
 ## Usage
 
