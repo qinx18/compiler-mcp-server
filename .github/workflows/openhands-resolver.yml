@@ -213,6 +213,14 @@ jobs:
               export LLM_MODEL="$LLM_MODEL"
               export LLM_BASE_URL="$LLM_BASE_URL"
               
+              # Debug resolver selection
+              echo "🔍 Resolver selection debugging:"
+              echo "  RESOLVER_TYPE: '$RESOLVER_TYPE'"
+              echo "  openhands-resolver command: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'available' || echo 'not found')"
+              echo "  Python module test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'importable' || echo 'not importable')"
+              echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'importable' || echo 'not importable')"
+              echo "  simple_resolver.py: $([ -f 'simple_resolver.py' ] && echo 'exists' || echo 'missing')"
+              
               # Try different resolver approaches based on what was installed
               if [ "$RESOLVER_TYPE" = "simple" ] && [ -f "simple_resolver.py" ]; then
                 echo "🔄 Using simple resolver (fallback implementation)..."

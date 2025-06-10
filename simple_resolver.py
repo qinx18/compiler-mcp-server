@@ -77,8 +77,22 @@ def call_llm(prompt: str, api_key: str, model: str, base_url: Optional[str] = No
             response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
     except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
         error_msg = f"Error calling LLM: {str(e)}"
         print(f"❌ {error_msg}")
+        print(f"🔍 Full error details:\n{error_details}")
+        
+        # Check for specific error types
+        if "Connection" in str(e) or "connection" in str(e).lower():
+            print("🌐 This appears to be a network connectivity issue")
+        elif "401" in str(e) or "unauthorized" in str(e).lower():
+            print("🔑 This appears to be an API key authentication issue")
+        elif "404" in str(e) or "not found" in str(e).lower():
+            print("🎯 This appears to be a model or endpoint not found issue")
+        elif "429" in str(e) or "rate limit" in str(e).lower():
+            print("⏱️ This appears to be a rate limiting issue")
+        
         return error_msg
 
 def post_comment(repo: str, issue_number: str, comment: str, github_token: str):
@@ -112,6 +126,21 @@ def main():
         sys.exit(1)
     
     print(f"🔄 Resolving issue #{issue_number} in {repo}")
+    
+    # Test network connectivity
+    print("🌐 Testing network connectivity...")
+    try:
+        test_response = requests.get("https://api.openai.com/v1/models", 
+                                   headers={"Authorization": f"Bearer {llm_api_key}"}, 
+                                   timeout=10)
+        if test_response.status_code == 200:
+            print("✅ OpenAI API is reachable and API key is valid")
+        elif test_response.status_code == 401:
+            print("❌ OpenAI API key is invalid or expired")
+        else:
+            print(f"⚠️ OpenAI API returned status {test_response.status_code}")
+    except Exception as e:
+        print(f"❌ Network connectivity test failed: {e}")
     
     # Get issue content
     issue = get_issue_content(repo, issue_number, github_token)
