@@ -61,11 +61,11 @@ jobs:
 
       - name: Check secrets and run resolver
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ secrets.PAT_USERNAME || github.actor }}
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.actor }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY || '' }}
           LLM_MODEL: ${{ secrets.LLM_MODEL || 'anthropic/claude-3-5-sonnet-20241022' }}
-          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL || '' }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           REPO_NAME: ${{ github.repository }}
         run: |
@@ -76,9 +76,16 @@ jobs:
             MISSING_SECRETS="true"
           fi
           
-          if [ -z "${{ secrets.PAT_TOKEN }}" ] && [ -z "$GITHUB_TOKEN" ]; then
-            echo "❌ Neither PAT_TOKEN nor GITHUB_TOKEN is available"
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "❌ GITHUB_TOKEN is not available"
             MISSING_SECRETS="true"
+          fi
+          
+          # Note: LLM_BASE_URL is optional - if not set, the resolver will use default endpoints
+          if [ -n "$LLM_BASE_URL" ]; then
+            echo "✅ Using custom LLM_BASE_URL: $LLM_BASE_URL"
+          else
+            echo "ℹ️ LLM_BASE_URL not set, using default endpoints"
           fi
           
           # Function to post comment to issue
@@ -102,9 +109,10 @@ jobs:
             ERROR_MSG="${ERROR_MSG}2. Set up the required secrets (see below)\\n"
             ERROR_MSG="${ERROR_MSG}3. Try manual resolution using the instructions in the README\\n\\n"
             ERROR_MSG="${ERROR_MSG}**Required secrets** (in repository Settings > Secrets):\\n"
-            ERROR_MSG="${ERROR_MSG}- \`PAT_TOKEN\`: GitHub Personal Access Token with repo permissions\\n"
             ERROR_MSG="${ERROR_MSG}- \`LLM_API_KEY\`: API key for your LLM service (Claude, OpenAI, etc.)\\n"
-            ERROR_MSG="${ERROR_MSG}- \`LLM_MODEL\`: Model name (e.g., \`anthropic/claude-3-5-sonnet-20241022\`)\\n\\n"
+            ERROR_MSG="${ERROR_MSG}- \`LLM_MODEL\`: Model name (e.g., \`anthropic/claude-3-5-sonnet-20241022\`)\\n"
+            ERROR_MSG="${ERROR_MSG}- \`LLM_BASE_URL\`: (Optional) Custom API endpoint URL\\n\\n"
+            ERROR_MSG="${ERROR_MSG}**Note**: GITHUB_TOKEN is automatically provided by GitHub Actions.\\n\\n"
             ERROR_MSG="${ERROR_MSG}See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed setup instructions."
             post_comment "$ERROR_MSG"
           elif [ "$MISSING_SECRETS" = "true" ]; then
@@ -114,13 +122,13 @@ jobs:
             SETUP_MSG="${SETUP_MSG}**To enable automatic issue resolution:**\\n\\n"
             SETUP_MSG="${SETUP_MSG}1. Go to repository **Settings > Secrets and variables > Actions**\\n"
             SETUP_MSG="${SETUP_MSG}2. Add these secrets:\\n"
-            SETUP_MSG="${SETUP_MSG}   - \`PAT_TOKEN\`: [Create a Personal Access Token]"
-            SETUP_MSG="${SETUP_MSG}(https://github.com/settings/tokens) with repo permissions\\n"
             SETUP_MSG="${SETUP_MSG}   - \`LLM_API_KEY\`: API key from [Claude]"
             SETUP_MSG="${SETUP_MSG}(https://console.anthropic.com/) or [OpenAI]"
             SETUP_MSG="${SETUP_MSG}(https://platform.openai.com/api-keys)\\n"
             SETUP_MSG="${SETUP_MSG}   - \`LLM_MODEL\`: Model name "
-            SETUP_MSG="${SETUP_MSG}(e.g., \`anthropic/claude-3-5-sonnet-20241022\`)\\n\\n"
+            SETUP_MSG="${SETUP_MSG}(e.g., \`anthropic/claude-3-5-sonnet-20241022\`)\\n"
+            SETUP_MSG="${SETUP_MSG}   - \`LLM_BASE_URL\`: (Optional) Custom API endpoint URL\\n\\n"
+            SETUP_MSG="${SETUP_MSG}**Note**: GITHUB_TOKEN is automatically provided by GitHub Actions.\\n\\n"
             SETUP_MSG="${SETUP_MSG}3. **Enable workflow permissions:**\\n"
             SETUP_MSG="${SETUP_MSG}   - Go to Settings > Actions > General > Workflow permissions\\n"
             SETUP_MSG="${SETUP_MSG}   - Select \\\"Read and write permissions\\\"\\n"
