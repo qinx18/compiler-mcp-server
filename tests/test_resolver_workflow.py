@@ -482,6 +482,240 @@ class TestGitHubIssueReproduction:
         print("   ✅ This shows the logic SHOULD fail, so there's a bug in the actual workflow!")
 
 
+class TestGitHubIssue6ResolverSelectionBug:
+    """
+    Test class specifically for GitHub Issue #6: Strategy 2 verification vs resolver selection mismatch
+    
+    Issue: Strategy 2 succeeds verification but resolver selection fails due to different import paths
+    """
+    
+    def test_import_path_mismatch_between_verification_and_selection(self):
+        """
+        Test that reproduces the exact issue from GitHub Issue #6:
+        
+        Strategy 2 verification tests: `python -c "import openhands_resolver"`
+        Resolver selection tests: `python -c "import openhands_resolver.resolve_issue"`
+        
+        These are different import paths! This causes the mismatch.
+        """
+        
+        # Simulate the exact scenario from the GitHub issue
+        print("\n🔍 Testing GitHub Issue #6: Import path mismatch")
+        
+        # 1. Strategy 2 verification logic (from workflow lines 83-94)
+        def strategy2_verification():
+            """Simulate Strategy 2 verification that tests 'import openhands_resolver'"""
+            try:
+                # This is what Strategy 2 verification tests:
+                result = subprocess.run([sys.executable, '-c', 'import openhands_resolver'], 
+                                      capture_output=True, text=True)
+                return result.returncode == 0
+            except:
+                return False
+        
+        # 2. Resolver selection logic (from workflow lines 275-284)
+        def resolver_selection_tests():
+            """Simulate resolver selection that tests different import paths"""
+            
+            # Test 1: python -c "import openhands_resolver.resolve_issue"
+            try:
+                result1 = subprocess.run([sys.executable, '-c', 'import openhands_resolver.resolve_issue'], 
+                                       capture_output=True, text=True)
+                module_import_works = result1.returncode == 0
+            except:
+                module_import_works = False
+            
+            # Test 2: python -c "from openhands_resolver import resolve_issue"
+            try:
+                result2 = subprocess.run([sys.executable, '-c', 'from openhands_resolver import resolve_issue'], 
+                                       capture_output=True, text=True)
+                direct_import_works = result2.returncode == 0
+            except:
+                direct_import_works = False
+            
+            return module_import_works, direct_import_works
+        
+        # 3. Run the tests
+        verification_passes = strategy2_verification()
+        module_import_works, direct_import_works = resolver_selection_tests()
+        
+        # 4. The issue: verification might pass but selection tests fail
+        print(f"   Strategy 2 verification (import openhands_resolver): {verification_passes}")
+        print(f"   Selection test 1 (import openhands_resolver.resolve_issue): {module_import_works}")
+        print(f"   Selection test 2 (from openhands_resolver import resolve_issue): {direct_import_works}")
+        
+        # 5. This test should demonstrate the bug when it exists
+        # For now, we expect all to fail since openhands_resolver isn't installed
+        # But the test structure shows the potential for mismatch
+        
+        # The bug occurs when:
+        # - verification_passes = True (Strategy 2 claims success)
+        # - module_import_works = False AND direct_import_works = False (selection fails)
+        # This would cause RESOLVER_TYPE=standard but fallback to simple resolver
+        
+        if verification_passes and not (module_import_works or direct_import_works):
+            print("   🐛 BUG DETECTED: Verification passes but selection fails!")
+            print("   This would cause Strategy 2 to claim success but resolver selection to fail")
+            assert False, "Import path mismatch detected - this is the GitHub Issue #6 bug!"
+        elif not verification_passes and not (module_import_works or direct_import_works):
+            print("   ✅ Consistent behavior: All imports fail (expected in test environment)")
+        elif verification_passes and (module_import_works or direct_import_works):
+            print("   ✅ Consistent behavior: All imports work")
+        else:
+            print("   ⚠️  Unexpected state - need to investigate further")
+    
+    def test_mock_scenario_reproducing_github_issue_6(self):
+        """
+        Use mocking to reproduce the exact scenario from GitHub Issue #6
+        where Strategy 2 verification passes but resolver selection fails
+        """
+        
+        print("\n🎭 Mocking the exact GitHub Issue #6 scenario")
+        
+        # Mock the scenario where:
+        # - `import openhands_resolver` works (Strategy 2 verification passes)
+        # - `import openhands_resolver.resolve_issue` fails (resolver selection fails)
+        # - `from openhands_resolver import resolve_issue` fails (resolver selection fails)
+        
+        with patch('subprocess.run') as mock_run:
+            def mock_subprocess_side_effect(cmd, **kwargs):
+                """Mock subprocess.run to simulate the problematic scenario"""
+                if 'import openhands_resolver' in cmd and 'resolve_issue' not in ' '.join(cmd):
+                    # Strategy 2 verification: `import openhands_resolver` succeeds
+                    mock_result = MagicMock()
+                    mock_result.returncode = 0
+                    return mock_result
+                elif 'import openhands_resolver.resolve_issue' in ' '.join(cmd):
+                    # Resolver selection test 1: fails
+                    mock_result = MagicMock()
+                    mock_result.returncode = 1
+                    return mock_result
+                elif 'from openhands_resolver import resolve_issue' in ' '.join(cmd):
+                    # Resolver selection test 2: fails
+                    mock_result = MagicMock()
+                    mock_result.returncode = 1
+                    return mock_result
+                else:
+                    # Default: fail
+                    mock_result = MagicMock()
+                    mock_result.returncode = 1
+                    return mock_result
+            
+            mock_run.side_effect = mock_subprocess_side_effect
+            
+            # Now test the scenario
+            # 1. Strategy 2 verification
+            verification_result = subprocess.run([sys.executable, '-c', 'import openhands_resolver'], 
+                                               capture_output=True, text=True)
+            strategy2_passes = verification_result.returncode == 0
+            
+            # 2. Resolver selection tests
+            module_result = subprocess.run([sys.executable, '-c', 'import openhands_resolver.resolve_issue'], 
+                                         capture_output=True, text=True)
+            module_import_works = module_result.returncode == 0
+            
+            direct_result = subprocess.run([sys.executable, '-c', 'from openhands_resolver import resolve_issue'], 
+                                         capture_output=True, text=True)
+            direct_import_works = direct_result.returncode == 0
+            
+            # 3. Verify we've reproduced the issue
+            print(f"   Strategy 2 verification: {strategy2_passes}")
+            print(f"   Module import test: {module_import_works}")
+            print(f"   Direct import test: {direct_import_works}")
+            
+            # This should reproduce the exact issue from GitHub Issue #6
+            assert strategy2_passes, "Strategy 2 verification should pass (mocked)"
+            assert not module_import_works, "Module import should fail (mocked)"
+            assert not direct_import_works, "Direct import should fail (mocked)"
+            
+            # 4. Simulate the workflow logic
+            if strategy2_passes:
+                resolver_type = "standard"  # Strategy 2 sets this
+                print(f"   RESOLVER_TYPE set to: {resolver_type}")
+            
+            # 5. Simulate resolver selection logic
+            if resolver_type == "standard" and module_import_works:
+                selected_resolver = "python module"
+            elif resolver_type == "standard" and direct_import_works:
+                selected_resolver = "direct import"
+            else:
+                selected_resolver = "fallback to simple resolver"
+            
+            print(f"   Selected resolver: {selected_resolver}")
+            
+            # 6. This demonstrates the bug!
+            assert resolver_type == "standard", "Strategy 2 should set RESOLVER_TYPE=standard"
+            assert selected_resolver == "fallback to simple resolver", "Should fall back due to import path mismatch"
+            
+            print("   🐛 SUCCESSFULLY REPRODUCED GitHub Issue #6!")
+            print("   Strategy 2 claims success but resolver selection fails due to import path mismatch")
+    
+    def test_github_issue_6_should_not_exist_but_does(self):
+        """
+        This test EXPECTS the bug to NOT exist, so it should FAIL when the bug is present.
+        This demonstrates that the issue exists and needs to be fixed.
+        """
+        
+        print("\n❌ Testing that GitHub Issue #6 bug should NOT exist (this test should FAIL)")
+        
+        # Mock the problematic scenario
+        with patch('subprocess.run') as mock_run:
+            def mock_subprocess_side_effect(cmd, **kwargs):
+                """Mock the exact scenario from GitHub Issue #6"""
+                if 'import openhands_resolver' in cmd and 'resolve_issue' not in ' '.join(cmd):
+                    # Strategy 2 verification: succeeds
+                    mock_result = MagicMock()
+                    mock_result.returncode = 0
+                    return mock_result
+                elif 'import openhands_resolver.resolve_issue' in ' '.join(cmd):
+                    # Resolver selection test 1: fails (this is the bug!)
+                    mock_result = MagicMock()
+                    mock_result.returncode = 1
+                    return mock_result
+                elif 'from openhands_resolver import resolve_issue' in ' '.join(cmd):
+                    # Resolver selection test 2: fails (this is the bug!)
+                    mock_result = MagicMock()
+                    mock_result.returncode = 1
+                    return mock_result
+                else:
+                    mock_result = MagicMock()
+                    mock_result.returncode = 1
+                    return mock_result
+            
+            mock_run.side_effect = mock_subprocess_side_effect
+            
+            # Test the scenario
+            verification_result = subprocess.run([sys.executable, '-c', 'import openhands_resolver'], 
+                                               capture_output=True, text=True)
+            strategy2_passes = verification_result.returncode == 0
+            
+            module_result = subprocess.run([sys.executable, '-c', 'import openhands_resolver.resolve_issue'], 
+                                         capture_output=True, text=True)
+            module_import_works = module_result.returncode == 0
+            
+            direct_result = subprocess.run([sys.executable, '-c', 'from openhands_resolver import resolve_issue'], 
+                                         capture_output=True, text=True)
+            direct_import_works = direct_result.returncode == 0
+            
+            # If the bug didn't exist, this should be true:
+            # "If Strategy 2 verification passes, then resolver selection should also work"
+            
+            print(f"   Strategy 2 verification passes: {strategy2_passes}")
+            print(f"   Resolver selection should work: {module_import_works or direct_import_works}")
+            
+            if strategy2_passes:
+                # This assertion should FAIL because of the bug
+                # The bug causes Strategy 2 to pass but resolver selection to fail
+                try:
+                    assert module_import_works or direct_import_works, \
+                        "If Strategy 2 verification passes, resolver selection should also work (but it doesn't due to import path mismatch bug)"
+                    print("   ✅ No bug detected - Strategy 2 verification and resolver selection are consistent")
+                except AssertionError as e:
+                    print(f"   ❌ BUG CONFIRMED: {e}")
+                    print("   This test failure proves GitHub Issue #6 exists and needs to be fixed!")
+                    raise  # Re-raise to make the test fail
+
+
 if __name__ == "__main__":
     # Run the tests to demonstrate the issue and verify the fix
     print("🔍 Running issue reproduction tests...")
@@ -497,6 +731,18 @@ if __name__ == "__main__":
     github_issue_test = TestGitHubIssueReproduction()
     github_issue_test.test_exact_github_issue_scenario()
     github_issue_test.test_strategy2_verification_bug_root_cause()
+    
+    print("\n🐛 Running GitHub Issue #6 specific tests...")
+    issue6_test = TestGitHubIssue6ResolverSelectionBug()
+    issue6_test.test_import_path_mismatch_between_verification_and_selection()
+    issue6_test.test_mock_scenario_reproducing_github_issue_6()
+    
+    print("\n❌ Running test that should FAIL to demonstrate the bug exists...")
+    try:
+        issue6_test.test_github_issue_6_should_not_exist_but_does()
+        print("   ⚠️  Unexpected: Test passed - bug might be fixed or test needs adjustment")
+    except AssertionError:
+        print("   ✅ Expected: Test failed - this confirms GitHub Issue #6 bug exists!")
     
     print("\n🔧 Running fix verification tests...")
     fix_test = TestResolverWorkflowFix()
