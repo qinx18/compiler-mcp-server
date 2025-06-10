@@ -5,11 +5,12 @@ This file contains shared fixtures and configuration for testing the
 compiler MCP server's protocol implementation.
 """
 
-import pytest
 import asyncio
-import sys
 import os
+import sys
 from pathlib import Path
+
+import pytest
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -65,7 +66,7 @@ def sample_codes():
                     a[i] = b[i] + 1;  // a and b might alias
                 }
             }
-        """
+        """,
     }
 
 
@@ -79,24 +80,12 @@ def mcp_protocol_messages():
             "method": "initialize",
             "params": {
                 "protocolVersion": "2024-11-05",
-                "capabilities": {
-                    "tools": {}
-                },
-                "clientInfo": {
-                    "name": "claude-desktop",
-                    "version": "0.7.0"
-                }
-            }
+                "capabilities": {"tools": {}},
+                "clientInfo": {"name": "claude-desktop", "version": "0.7.0"},
+            },
         },
-        "initialized_notification": {
-            "jsonrpc": "2.0",
-            "method": "initialized"
-        },
-        "tools_list_request": {
-            "jsonrpc": "2.0",
-            "id": 2,
-            "method": "tools/list"
-        },
+        "initialized_notification": {"jsonrpc": "2.0", "method": "initialized"},
+        "tools_list_request": {"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
         "tool_call_request": {
             "jsonrpc": "2.0",
             "id": 3,
@@ -105,10 +94,10 @@ def mcp_protocol_messages():
                 "name": "analyze_vectorization_failure",
                 "arguments": {
                     "code": "for(int i=0; i<100; i++) a[i] = b[i] + c[i];",
-                    "session_id": "test_session"
-                }
-            }
-        }
+                    "session_id": "test_session",
+                },
+            },
+        },
     }
 
 
@@ -119,7 +108,7 @@ def claude_desktop_config():
         "mcpServers": {
             "compiler": {
                 "command": "python",
-                "args": [str(Path.cwd().absolute() / "solution_for_s1113.py")]
+                "args": [str(Path.cwd().absolute() / "solution_for_s1113.py")],
             }
         }
     }
@@ -134,9 +123,7 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "integration: integration tests with real server communication"
     )
-    config.addinivalue_line(
-        "markers", "performance: performance and load tests"
-    )
+    config.addinivalue_line("markers", "performance: performance and load tests")
     config.addinivalue_line(
         "markers", "claude_desktop: tests specific to Claude Desktop integration"
     )

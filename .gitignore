@@ -60,6 +60,50 @@ Thumbs.db
 *.exe
 a.out
 
-# Test outputs
-test_output/*.txt
-test_output/*.log
+# Test outputs and coverage
+test_output/
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Linting
+.ruff_cache/
+
+# Security reports
+bandit-report.json
+
+# Pre-commit
+.pre-commit-cache/
+
+# Package management
+poetry.lock
+Pipfile.lock
+
+# Environment variables
+.env.local
+.env.*.local
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Documentation
+docs/_build/
+site/
+
+# Backup files
+*.bak
+*.backup
+
+# OpenHands specific
+openhands_env/
+resolver/
+*.zip
+action_logs.zip
+latest_*.zip

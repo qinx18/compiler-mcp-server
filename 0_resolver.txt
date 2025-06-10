@@ -1,0 +1,776 @@
+﻿2025-06-10T16:45:56.4352327Z Current runner version: '2.325.0'
+2025-06-10T16:45:56.4374895Z ##[group]Runner Image Provisioner
+2025-06-10T16:45:56.4375764Z Hosted Compute Agent
+2025-06-10T16:45:56.4376406Z Version: 20250529.345
+2025-06-10T16:45:56.4377028Z Commit: 22237e57af968c281070ffa8ed912c1b754f9a23
+2025-06-10T16:45:56.4377735Z Build Date: 2025-05-29T20:18:30Z
+2025-06-10T16:45:56.4378371Z ##[endgroup]
+2025-06-10T16:45:56.4378907Z ##[group]Operating System
+2025-06-10T16:45:56.4379457Z Ubuntu
+2025-06-10T16:45:56.4379957Z 24.04.2
+2025-06-10T16:45:56.4380409Z LTS
+2025-06-10T16:45:56.4380870Z ##[endgroup]
+2025-06-10T16:45:56.4381392Z ##[group]Runner Image
+2025-06-10T16:45:56.4382133Z Image: ubuntu-24.04
+2025-06-10T16:45:56.4382751Z Version: 20250602.3.0
+2025-06-10T16:45:56.4383799Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250602.3/images/ubuntu/Ubuntu2404-Readme.md
+2025-06-10T16:45:56.4385348Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250602.3
+2025-06-10T16:45:56.4386668Z ##[endgroup]
+2025-06-10T16:45:56.4387863Z ##[group]GITHUB_TOKEN Permissions
+2025-06-10T16:45:56.4389941Z Contents: write
+2025-06-10T16:45:56.4390529Z Issues: write
+2025-06-10T16:45:56.4391005Z Metadata: read
+2025-06-10T16:45:56.4391573Z PullRequests: write
+2025-06-10T16:45:56.4392307Z ##[endgroup]
+2025-06-10T16:45:56.4394474Z Secret source: Actions
+2025-06-10T16:45:56.4395379Z Prepare workflow directory
+2025-06-10T16:45:56.4717377Z Prepare all required actions
+2025-06-10T16:45:56.4755913Z Getting action download info
+2025-06-10T16:45:56.9051278Z ##[group]Download immutable action package 'actions/checkout@v4'
+2025-06-10T16:45:56.9052537Z Version: 4.2.2
+2025-06-10T16:45:56.9053627Z Digest: sha256:ccb2698953eaebd21c7bf6268a94f9c26518a7e38e27e0b83c1fe1ad049819b1
+2025-06-10T16:45:56.9054781Z Source commit SHA: 11bd71901bbe5b1630ceea73d27597364c9af683
+2025-06-10T16:45:56.9055489Z ##[endgroup]
+2025-06-10T16:45:56.9812350Z ##[group]Download immutable action package 'actions/setup-python@v5'
+2025-06-10T16:45:56.9813184Z Version: 5.6.0
+2025-06-10T16:45:56.9814019Z Digest: sha256:0b35a0c11c97499e4e0576589036d450b9f5f9da74b7774225b3614b57324404
+2025-06-10T16:45:56.9814994Z Source commit SHA: a26af69be951a213d495a4c3e4e4022e16d87065
+2025-06-10T16:45:56.9815662Z ##[endgroup]
+2025-06-10T16:45:57.3523274Z Complete job name: resolver
+2025-06-10T16:45:57.4185861Z ##[group]Run actions/checkout@v4
+2025-06-10T16:45:57.4186715Z with:
+2025-06-10T16:45:57.4187154Z   repository: qinx18/compiler-mcp-server
+2025-06-10T16:45:57.4187829Z   token: ***
+2025-06-10T16:45:57.4188237Z   ssh-strict: true
+2025-06-10T16:45:57.4188630Z   ssh-user: git
+2025-06-10T16:45:57.4189027Z   persist-credentials: true
+2025-06-10T16:45:57.4189466Z   clean: true
+2025-06-10T16:45:57.4189898Z   sparse-checkout-cone-mode: true
+2025-06-10T16:45:57.4190364Z   fetch-depth: 1
+2025-06-10T16:45:57.4190760Z   fetch-tags: false
+2025-06-10T16:45:57.4191162Z   show-progress: true
+2025-06-10T16:45:57.4191563Z   lfs: false
+2025-06-10T16:45:57.4192142Z   submodules: false
+2025-06-10T16:45:57.4192568Z   set-safe-directory: true
+2025-06-10T16:45:57.4193246Z ##[endgroup]
+2025-06-10T16:45:57.5282508Z Syncing repository: qinx18/compiler-mcp-server
+2025-06-10T16:45:57.5285204Z ##[group]Getting Git version info
+2025-06-10T16:45:57.5286661Z Working directory is '/home/runner/work/compiler-mcp-server/compiler-mcp-server'
+2025-06-10T16:45:57.5288558Z [command]/usr/bin/git version
+2025-06-10T16:45:57.5298959Z git version 2.49.0
+2025-06-10T16:45:57.5326136Z ##[endgroup]
+2025-06-10T16:45:57.5343659Z Temporarily overriding HOME='/home/runner/work/_temp/434ba2a9-ebe4-410c-9b39-f0bce751110e' before making global git config changes
+2025-06-10T16:45:57.5346165Z Adding repository directory to the temporary git global config as a safe directory
+2025-06-10T16:45:57.5348974Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/compiler-mcp-server/compiler-mcp-server
+2025-06-10T16:45:57.5385004Z Deleting the contents of '/home/runner/work/compiler-mcp-server/compiler-mcp-server'
+2025-06-10T16:45:57.5389904Z ##[group]Initializing the repository
+2025-06-10T16:45:57.5397550Z [command]/usr/bin/git init /home/runner/work/compiler-mcp-server/compiler-mcp-server
+2025-06-10T16:45:57.5459442Z hint: Using 'master' as the name for the initial branch. This default branch name
+2025-06-10T16:45:57.5460546Z hint: is subject to change. To configure the initial branch name to use in all
+2025-06-10T16:45:57.5461436Z hint: of your new repositories, which will suppress this warning, call:
+2025-06-10T16:45:57.5462340Z hint:
+2025-06-10T16:45:57.5462818Z hint: 	git config --global init.defaultBranch <name>
+2025-06-10T16:45:57.5463653Z hint:
+2025-06-10T16:45:57.5464427Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2025-06-10T16:45:57.5465307Z hint: 'development'. The just-created branch can be renamed via this command:
+2025-06-10T16:45:57.5465988Z hint:
+2025-06-10T16:45:57.5466361Z hint: 	git branch -m <name>
+2025-06-10T16:45:57.5467228Z Initialized empty Git repository in /home/runner/work/compiler-mcp-server/compiler-mcp-server/.git/
+2025-06-10T16:45:57.5475029Z [command]/usr/bin/git remote add origin https://github.com/qinx18/compiler-mcp-server
+2025-06-10T16:45:57.5504098Z ##[endgroup]
+2025-06-10T16:45:57.5504810Z ##[group]Disabling automatic garbage collection
+2025-06-10T16:45:57.5508194Z [command]/usr/bin/git config --local gc.auto 0
+2025-06-10T16:45:57.5535699Z ##[endgroup]
+2025-06-10T16:45:57.5536360Z ##[group]Setting up auth
+2025-06-10T16:45:57.5542593Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-06-10T16:45:57.5573575Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-06-10T16:45:57.5828691Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-06-10T16:45:57.5859060Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-06-10T16:45:57.6074392Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2025-06-10T16:45:57.6108487Z ##[endgroup]
+2025-06-10T16:45:57.6110087Z ##[group]Fetching the repository
+2025-06-10T16:45:57.6118557Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8cdcbed08587ce323d75e21ec8098277e5017b91:refs/remotes/origin/main
+2025-06-10T16:45:58.2235675Z From https://github.com/qinx18/compiler-mcp-server
+2025-06-10T16:45:58.2237327Z  * [new ref]         8cdcbed08587ce323d75e21ec8098277e5017b91 -> origin/main
+2025-06-10T16:45:58.2264754Z ##[endgroup]
+2025-06-10T16:45:58.2266164Z ##[group]Determining the checkout info
+2025-06-10T16:45:58.2267757Z ##[endgroup]
+2025-06-10T16:45:58.2273369Z [command]/usr/bin/git sparse-checkout disable
+2025-06-10T16:45:58.2313460Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2025-06-10T16:45:58.2342436Z ##[group]Checking out the ref
+2025-06-10T16:45:58.2346225Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2025-06-10T16:45:58.2419530Z Switched to a new branch 'main'
+2025-06-10T16:45:58.2423132Z branch 'main' set up to track 'origin/main'.
+2025-06-10T16:45:58.2429201Z ##[endgroup]
+2025-06-10T16:45:58.2461843Z [command]/usr/bin/git log -1 --format=%H
+2025-06-10T16:45:58.2488093Z 8cdcbed08587ce323d75e21ec8098277e5017b91
+2025-06-10T16:45:58.2768541Z ##[group]Run actions/setup-python@v5
+2025-06-10T16:45:58.2769336Z with:
+2025-06-10T16:45:58.2769797Z   python-version: 3.11
+2025-06-10T16:45:58.2770361Z   check-latest: false
+2025-06-10T16:45:58.2771152Z   token: ***
+2025-06-10T16:45:58.2771841Z   update-environment: true
+2025-06-10T16:45:58.2772495Z   allow-prereleases: false
+2025-06-10T16:45:58.2773104Z   freethreaded: false
+2025-06-10T16:45:58.2773613Z ##[endgroup]
+2025-06-10T16:45:58.4410592Z ##[group]Installed versions
+2025-06-10T16:45:58.4535890Z Successfully set up CPython (3.11.12)
+2025-06-10T16:45:58.4538226Z ##[endgroup]
+2025-06-10T16:45:58.4680416Z ##[group]Run python -m pip install --upgrade pip
+2025-06-10T16:45:58.4682213Z [36;1mpython -m pip install --upgrade pip[0m
+2025-06-10T16:45:58.4683566Z [36;1mpip install wheel setuptools[0m
+2025-06-10T16:45:58.4757795Z shell: /usr/bin/bash -e {0}
+2025-06-10T16:45:58.4758857Z env:
+2025-06-10T16:45:58.4759906Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:45:58.4761997Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.12/x64/lib/pkgconfig
+2025-06-10T16:45:58.4763855Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:45:58.4765489Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:45:58.4767136Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:45:58.4768790Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.12/x64/lib
+2025-06-10T16:45:58.4770217Z ##[endgroup]
+2025-06-10T16:45:59.0562455Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages (25.1.1)
+2025-06-10T16:45:59.6650577Z Collecting wheel
+2025-06-10T16:45:59.6972507Z   Downloading wheel-0.45.1-py3-none-any.whl.metadata (2.3 kB)
+2025-06-10T16:45:59.7018637Z Requirement already satisfied: setuptools in /opt/hostedtoolcache/Python/3.11.12/x64/lib/python3.11/site-packages (65.5.0)
+2025-06-10T16:45:59.7143701Z Downloading wheel-0.45.1-py3-none-any.whl (72 kB)
+2025-06-10T16:45:59.7343376Z Installing collected packages: wheel
+2025-06-10T16:45:59.7788963Z Successfully installed wheel-0.45.1
+2025-06-10T16:45:59.8245123Z ##[group]Run echo "🔧 Installing OpenHands Resolver with dependency conflict resolution..."
+2025-06-10T16:45:59.8246215Z [36;1mecho "🔧 Installing OpenHands Resolver with dependency conflict resolution..."[0m
+2025-06-10T16:45:59.8246599Z [36;1m[0m
+2025-06-10T16:45:59.8246852Z [36;1m# Create a clean virtual environment to avoid conflicts[0m
+2025-06-10T16:45:59.8247199Z [36;1mpython -m venv openhands_env[0m
+2025-06-10T16:45:59.8247471Z [36;1msource openhands_env/bin/activate[0m
+2025-06-10T16:45:59.8247709Z [36;1m[0m
+2025-06-10T16:45:59.8247882Z [36;1m# Upgrade core tools[0m
+2025-06-10T16:45:59.8248167Z [36;1mpip install --upgrade pip setuptools wheel[0m
+2025-06-10T16:45:59.8248470Z [36;1m[0m
+2025-06-10T16:45:59.8248728Z [36;1m# Install dependencies in specific order to avoid conflicts[0m
+2025-06-10T16:45:59.8249090Z [36;1mecho "📦 Installing core dependencies..."[0m
+2025-06-10T16:45:59.8249383Z [36;1mpip install --no-deps packaging[0m
+2025-06-10T16:45:59.8249715Z [36;1mpip install --no-deps typing-extensions[0m
+2025-06-10T16:45:59.8249996Z [36;1mpip install --no-deps pydantic[0m
+2025-06-10T16:45:59.8250235Z [36;1m[0m
+2025-06-10T16:45:59.8250433Z [36;1m# Try multiple installation strategies[0m
+2025-06-10T16:45:59.8250698Z [36;1mINSTALL_SUCCESS=false[0m
+2025-06-10T16:45:59.8250925Z [36;1m[0m
+2025-06-10T16:45:59.8251216Z [36;1m# Strategy 1: Install latest openhands-resolver with dependency workarounds[0m
+2025-06-10T16:45:59.8251957Z [36;1mecho "🔄 Strategy 1: Installing latest openhands-resolver with dependency fixes..."[0m
+2025-06-10T16:45:59.8252459Z [36;1m# Try installing without the problematic openhands-ai dependency first[0m
+2025-06-10T16:45:59.8252877Z [36;1mif pip install --no-deps openhands-resolver && \[0m
+2025-06-10T16:45:59.8253408Z [36;1m   pip install "pandas>=2.2.3" "pytest>=8.3.3" termcolor pydantic requests click rich litellm openai anthropic; then[0m
+2025-06-10T16:45:59.8253921Z [36;1m  # Test if the resolver actually works[0m
+2025-06-10T16:45:59.8254331Z [36;1m  if python -c "import openhands_resolver; print('✅ Basic import works')" 2>/dev/null; then[0m
+2025-06-10T16:45:59.8254851Z [36;1m    echo "✅ Strategy 1 succeeded (resolver installed without full openhands-ai)"[0m
+2025-06-10T16:45:59.8255227Z [36;1m    INSTALL_SUCCESS=true[0m
+2025-06-10T16:45:59.8255714Z [36;1m    echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8255982Z [36;1m  else[0m
+2025-06-10T16:45:59.8256222Z [36;1m    echo "❌ Strategy 1 failed - resolver import failed"[0m
+2025-06-10T16:45:59.8256501Z [36;1m  fi[0m
+2025-06-10T16:45:59.8256674Z [36;1melse[0m
+2025-06-10T16:45:59.8256897Z [36;1m  echo "❌ Strategy 1 failed, trying Strategy 2..."[0m
+2025-06-10T16:45:59.8257159Z [36;1m  [0m
+2025-06-10T16:45:59.8257452Z [36;1m  # Strategy 2: Try installing older compatible version of openhands-resolver[0m
+2025-06-10T16:45:59.8257940Z [36;1m  echo "🔄 Strategy 2: Installing older compatible openhands-resolver version..."[0m
+2025-06-10T16:45:59.8258436Z [36;1m  # Try installing an older version that might not have the e2b dependency issue[0m
+2025-06-10T16:45:59.8258862Z [36;1m  if pip install "openhands-resolver<0.2.0" --no-deps && \[0m
+2025-06-10T16:45:59.8259378Z [36;1m     pip install "pandas>=2.2.3" "pytest>=8.3.3" termcolor pydantic requests click rich litellm openai anthropic; then[0m
+2025-06-10T16:45:59.8259867Z [36;1m    # Verify the installation actually works[0m
+2025-06-10T16:45:59.8260174Z [36;1m    echo "🔍 Verifying Strategy 2 installation..."[0m
+2025-06-10T16:45:59.8260632Z [36;1m    echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"[0m
+2025-06-10T16:45:59.8261254Z [36;1m    echo "  Basic import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"[0m
+2025-06-10T16:45:59.8262113Z [36;1m    echo "  Module import test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"[0m
+2025-06-10T16:45:59.8263025Z [36;1m    echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"[0m
+2025-06-10T16:45:59.8263513Z [36;1m    [0m
+2025-06-10T16:45:59.8263731Z [36;1m    # Check if we have a working resolver interface[0m
+2025-06-10T16:45:59.8264208Z [36;1m    # The resolver selection logic can work with: command, module import, direct import, or simple fallback[0m
+2025-06-10T16:45:59.8264667Z [36;1m    RESOLVER_INTERFACES_AVAILABLE=false[0m
+2025-06-10T16:45:59.8264925Z [36;1m    [0m
+2025-06-10T16:45:59.8265115Z [36;1m    # Check command line interface[0m
+2025-06-10T16:45:59.8265423Z [36;1m    if command -v openhands-resolver >/dev/null 2>&1; then[0m
+2025-06-10T16:45:59.8265751Z [36;1m      echo "✅ Command line interface available"[0m
+2025-06-10T16:45:59.8266042Z [36;1m      RESOLVER_INTERFACES_AVAILABLE=true[0m
+2025-06-10T16:45:59.8266289Z [36;1m    fi[0m
+2025-06-10T16:45:59.8266453Z [36;1m    [0m
+2025-06-10T16:45:59.8266733Z [36;1m    # Check Python module interfaces (used by resolver selection logic)[0m
+2025-06-10T16:45:59.8267184Z [36;1m    if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then[0m
+2025-06-10T16:45:59.8267581Z [36;1m      echo "✅ Module import interface available"[0m
+2025-06-10T16:45:59.8267877Z [36;1m      RESOLVER_INTERFACES_AVAILABLE=true[0m
+2025-06-10T16:45:59.8268260Z [36;1m    elif python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then[0m
+2025-06-10T16:45:59.8268662Z [36;1m      echo "✅ Direct import interface available"[0m
+2025-06-10T16:45:59.8268941Z [36;1m      RESOLVER_INTERFACES_AVAILABLE=true[0m
+2025-06-10T16:45:59.8269186Z [36;1m    fi[0m
+2025-06-10T16:45:59.8269374Z [36;1m    [0m
+2025-06-10T16:45:59.8269619Z [36;1m    # If any interface works, consider it a success[0m
+2025-06-10T16:45:59.8269931Z [36;1m    if [ "$RESOLVER_INTERFACES_AVAILABLE" = true ]; then[0m
+2025-06-10T16:45:59.8270362Z [36;1m      echo "✅ Strategy 2 succeeded and verified (at least one resolver interface works)"[0m
+2025-06-10T16:45:59.8270750Z [36;1m      INSTALL_SUCCESS=true[0m
+2025-06-10T16:45:59.8271014Z [36;1m      echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8335743Z [36;1m    else[0m
+2025-06-10T16:45:59.8336484Z [36;1m      echo "⚠️ Strategy 2 installed but verification failed (no working resolver interfaces), trying Strategy 3..."[0m
+2025-06-10T16:45:59.8338072Z [36;1m      echo "   Note: Basic 'import openhands_resolver' works, but resolver selection needs working interfaces"[0m
+2025-06-10T16:45:59.8339041Z [36;1m      # Don't set RESOLVER_TYPE here - let it fall through to other strategies[0m
+2025-06-10T16:45:59.8339618Z [36;1m    fi[0m
+2025-06-10T16:45:59.8339897Z [36;1m  else[0m
+2025-06-10T16:45:59.8340280Z [36;1m    echo "❌ Strategy 2 failed, trying Strategy 3..."[0m
+2025-06-10T16:45:59.8340734Z [36;1m    [0m
+2025-06-10T16:45:59.8341204Z [36;1m    # Strategy 3: Install from GitHub directly (fixed path)[0m
+2025-06-10T16:45:59.8342156Z [36;1m    echo "🔄 Strategy 3: Installing from GitHub source..."[0m
+2025-06-10T16:45:59.8342944Z [36;1m    # Install the main OpenHands package from GitHub, then extract just the resolver[0m
+2025-06-10T16:45:59.8343900Z [36;1m    if pip install git+https://github.com/All-Hands-AI/OpenHands.git --no-deps && \[0m
+2025-06-10T16:45:59.8345006Z [36;1m       pip install "pandas>=2.2.3" "pytest>=8.3.3" termcolor pydantic requests click rich litellm openai anthropic; then[0m
+2025-06-10T16:45:59.8345867Z [36;1m      # Verify the installation actually works[0m
+2025-06-10T16:45:59.8346425Z [36;1m      echo "🔍 Verifying Strategy 3 installation..."[0m
+2025-06-10T16:45:59.8347263Z [36;1m      echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"[0m
+2025-06-10T16:45:59.8348375Z [36;1m      echo "  Basic import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"[0m
+2025-06-10T16:45:59.8349864Z [36;1m      echo "  Module import test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"[0m
+2025-06-10T16:45:59.8351265Z [36;1m      echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"[0m
+2025-06-10T16:45:59.8352349Z [36;1m      [0m
+2025-06-10T16:45:59.8352666Z [36;1m      # Check if we have a working resolver interface[0m
+2025-06-10T16:45:59.8353177Z [36;1m      # The resolver selection logic can work with: command, module import, direct import, or simple fallback[0m
+2025-06-10T16:45:59.8353644Z [36;1m      RESOLVER_INTERFACES_AVAILABLE=false[0m
+2025-06-10T16:45:59.8353907Z [36;1m      [0m
+2025-06-10T16:45:59.8354113Z [36;1m      # Check command line interface[0m
+2025-06-10T16:45:59.8354440Z [36;1m      if command -v openhands-resolver >/dev/null 2>&1; then[0m
+2025-06-10T16:45:59.8354781Z [36;1m        echo "✅ Command line interface available"[0m
+2025-06-10T16:45:59.8355099Z [36;1m        RESOLVER_INTERFACES_AVAILABLE=true[0m
+2025-06-10T16:45:59.8355357Z [36;1m      fi[0m
+2025-06-10T16:45:59.8355532Z [36;1m      [0m
+2025-06-10T16:45:59.8355817Z [36;1m      # Check Python module interfaces (used by resolver selection logic)[0m
+2025-06-10T16:45:59.8356284Z [36;1m      if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then[0m
+2025-06-10T16:45:59.8356681Z [36;1m        echo "✅ Module import interface available"[0m
+2025-06-10T16:45:59.8356982Z [36;1m        RESOLVER_INTERFACES_AVAILABLE=true[0m
+2025-06-10T16:45:59.8357374Z [36;1m      elif python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then[0m
+2025-06-10T16:45:59.8357783Z [36;1m        echo "✅ Direct import interface available"[0m
+2025-06-10T16:45:59.8358074Z [36;1m        RESOLVER_INTERFACES_AVAILABLE=true[0m
+2025-06-10T16:45:59.8358332Z [36;1m      fi[0m
+2025-06-10T16:45:59.8358508Z [36;1m      [0m
+2025-06-10T16:45:59.8358735Z [36;1m      # If any interface works, consider it a success[0m
+2025-06-10T16:45:59.8359073Z [36;1m      if [ "$RESOLVER_INTERFACES_AVAILABLE" = true ]; then[0m
+2025-06-10T16:45:59.8359501Z [36;1m        echo "✅ Strategy 3 succeeded and verified (at least one resolver interface works)"[0m
+2025-06-10T16:45:59.8359883Z [36;1m        INSTALL_SUCCESS=true[0m
+2025-06-10T16:45:59.8360337Z [36;1m        echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8360609Z [36;1m      else[0m
+2025-06-10T16:45:59.8361020Z [36;1m        echo "⚠️ Strategy 3 installed but verification failed (no working resolver interfaces), trying Strategy 4..."[0m
+2025-06-10T16:45:59.8361898Z [36;1m        echo "   Note: Basic 'import openhands_resolver' works, but resolver selection needs working interfaces"[0m
+2025-06-10T16:45:59.8362437Z [36;1m        # Don't set RESOLVER_TYPE here - let it fall through to Strategy 4[0m
+2025-06-10T16:45:59.8362763Z [36;1m      fi[0m
+2025-06-10T16:45:59.8362931Z [36;1m    else[0m
+2025-06-10T16:45:59.8363215Z [36;1m      echo "❌ Strategy 3 failed, trying Strategy 4..."[0m
+2025-06-10T16:45:59.8363491Z [36;1m      [0m
+2025-06-10T16:45:59.8363741Z [36;1m      # Strategy 4: Last resort - use simple resolver fallback[0m
+2025-06-10T16:45:59.8364139Z [36;1m      echo "🔄 Strategy 4: Last resort - using simple resolver fallback..."[0m
+2025-06-10T16:45:59.8364560Z [36;1m      echo "⚠️ All standard resolver installation methods failed"[0m
+2025-06-10T16:45:59.8364986Z [36;1m      echo "   This may be due to dependency conflicts or package availability issues"[0m
+2025-06-10T16:45:59.8365328Z [36;1m      [0m
+2025-06-10T16:45:59.8365555Z [36;1m      # Install basic dependencies for simple resolver[0m
+2025-06-10T16:45:59.8365913Z [36;1m      pip install requests openai anthropic litellm termcolor[0m
+2025-06-10T16:45:59.8366211Z [36;1m      [0m
+2025-06-10T16:45:59.8366442Z [36;1m      # Ensure simple resolver is available and executable[0m
+2025-06-10T16:45:59.8366957Z [36;1m      if [ -f "simple_resolver.py" ]; then[0m
+2025-06-10T16:45:59.8367240Z [36;1m        chmod +x simple_resolver.py[0m
+2025-06-10T16:45:59.8367584Z [36;1m        echo "✅ Strategy 4 succeeded - using simple resolver as fallback"[0m
+2025-06-10T16:45:59.8367923Z [36;1m        INSTALL_SUCCESS=true[0m
+2025-06-10T16:45:59.8368197Z [36;1m        echo "RESOLVER_TYPE=simple" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8368465Z [36;1m      else[0m
+2025-06-10T16:45:59.8368721Z [36;1m        echo "❌ Strategy 4 failed - simple_resolver.py not found"[0m
+2025-06-10T16:45:59.8369054Z [36;1m        echo "   No resolver options available"[0m
+2025-06-10T16:45:59.8369321Z [36;1m      fi[0m
+2025-06-10T16:45:59.8369499Z [36;1m    fi[0m
+2025-06-10T16:45:59.8369668Z [36;1m  fi[0m
+2025-06-10T16:45:59.8369835Z [36;1mfi[0m
+2025-06-10T16:45:59.8369999Z [36;1m[0m
+2025-06-10T16:45:59.8370195Z [36;1m# Set environment variable for later steps[0m
+2025-06-10T16:45:59.8370478Z [36;1mif [ "$INSTALL_SUCCESS" = true ]; then[0m
+2025-06-10T16:45:59.8370778Z [36;1m  echo "RESOLVER_STATUS=success" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8371100Z [36;1m  echo "RESOLVER_VENV=openhands_env" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8371442Z [36;1m  echo "✅ OpenHands Resolver installed successfully"[0m
+2025-06-10T16:45:59.8371904Z [36;1m  [0m
+2025-06-10T16:45:59.8372090Z [36;1m  # Test the installation[0m
+2025-06-10T16:45:59.8372462Z [36;1m  if python -c "import openhands_resolver; print('✅ Import test passed')"; then[0m
+2025-06-10T16:45:59.8372865Z [36;1m    echo "RESOLVER_IMPORT=success" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8373128Z [36;1m  else[0m
+2025-06-10T16:45:59.8373348Z [36;1m    echo "RESOLVER_IMPORT=failed" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8373672Z [36;1m    echo "⚠️ Installation succeeded but import failed"[0m
+2025-06-10T16:45:59.8373942Z [36;1m  fi[0m
+2025-06-10T16:45:59.8374114Z [36;1melse[0m
+2025-06-10T16:45:59.8374325Z [36;1m  echo "RESOLVER_STATUS=failed" >> $GITHUB_ENV[0m
+2025-06-10T16:45:59.8374643Z [36;1m  echo "❌ All installation strategies failed"[0m
+2025-06-10T16:45:59.8374914Z [36;1mfi[0m
+2025-06-10T16:45:59.8428087Z shell: /usr/bin/bash -e {0}
+2025-06-10T16:45:59.8428330Z env:
+2025-06-10T16:45:59.8428578Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:45:59.8428984Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.12/x64/lib/pkgconfig
+2025-06-10T16:45:59.8429531Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:45:59.8429883Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:45:59.8430227Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:45:59.8430580Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.12/x64/lib
+2025-06-10T16:45:59.8430873Z ##[endgroup]
+2025-06-10T16:45:59.8504181Z 🔧 Installing OpenHands Resolver with dependency conflict resolution...
+2025-06-10T16:46:03.6545129Z Requirement already satisfied: pip in ./openhands_env/lib/python3.11/site-packages (24.0)
+2025-06-10T16:46:03.7396611Z Collecting pip
+2025-06-10T16:46:03.7691233Z   Downloading pip-25.1.1-py3-none-any.whl.metadata (3.6 kB)
+2025-06-10T16:46:03.7750198Z Requirement already satisfied: setuptools in ./openhands_env/lib/python3.11/site-packages (65.5.0)
+2025-06-10T16:46:03.9693724Z Collecting setuptools
+2025-06-10T16:46:03.9732080Z   Downloading setuptools-80.9.0-py3-none-any.whl.metadata (6.6 kB)
+2025-06-10T16:46:04.0085500Z Collecting wheel
+2025-06-10T16:46:04.0107907Z   Using cached wheel-0.45.1-py3-none-any.whl.metadata (2.3 kB)
+2025-06-10T16:46:04.0539776Z Downloading pip-25.1.1-py3-none-any.whl (1.8 MB)
+2025-06-10T16:46:04.0929257Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 50.2 MB/s eta 0:00:00
+2025-06-10T16:46:04.0962583Z Downloading setuptools-80.9.0-py3-none-any.whl (1.2 MB)
+2025-06-10T16:46:04.1096486Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 104.5 MB/s eta 0:00:00
+2025-06-10T16:46:04.1109776Z Using cached wheel-0.45.1-py3-none-any.whl (72 kB)
+2025-06-10T16:46:04.2036981Z Installing collected packages: wheel, setuptools, pip
+2025-06-10T16:46:04.2476807Z   Attempting uninstall: setuptools
+2025-06-10T16:46:04.2499545Z     Found existing installation: setuptools 65.5.0
+2025-06-10T16:46:04.2682645Z     Uninstalling setuptools-65.5.0:
+2025-06-10T16:46:04.2779371Z       Successfully uninstalled setuptools-65.5.0
+2025-06-10T16:46:04.9731262Z   Attempting uninstall: pip
+2025-06-10T16:46:04.9755745Z     Found existing installation: pip 24.0
+2025-06-10T16:46:05.0142602Z     Uninstalling pip-24.0:
+2025-06-10T16:46:05.0200011Z       Successfully uninstalled pip-24.0
+2025-06-10T16:46:05.8256556Z Successfully installed pip-25.1.1 setuptools-80.9.0 wheel-0.45.1
+2025-06-10T16:46:06.0155039Z 📦 Installing core dependencies...
+2025-06-10T16:46:06.4007168Z Collecting packaging
+2025-06-10T16:46:06.4317002Z   Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+2025-06-10T16:46:06.4389067Z Downloading packaging-25.0-py3-none-any.whl (66 kB)
+2025-06-10T16:46:06.4528659Z Installing collected packages: packaging
+2025-06-10T16:46:06.4932080Z Successfully installed packaging-25.0
+2025-06-10T16:46:06.9183992Z Collecting typing-extensions
+2025-06-10T16:46:06.9485611Z   Downloading typing_extensions-4.14.0-py3-none-any.whl.metadata (3.0 kB)
+2025-06-10T16:46:06.9564849Z Downloading typing_extensions-4.14.0-py3-none-any.whl (43 kB)
+2025-06-10T16:46:06.9693448Z Installing collected packages: typing-extensions
+2025-06-10T16:46:06.9969506Z Successfully installed typing-extensions-4.14.0
+2025-06-10T16:46:07.5317537Z Collecting pydantic
+2025-06-10T16:46:07.5624908Z   Downloading pydantic-2.11.5-py3-none-any.whl.metadata (67 kB)
+2025-06-10T16:46:07.5828828Z Downloading pydantic-2.11.5-py3-none-any.whl (444 kB)
+2025-06-10T16:46:07.5993331Z Installing collected packages: pydantic
+2025-06-10T16:46:07.8448530Z Successfully installed pydantic-2.11.5
+2025-06-10T16:46:07.8930001Z 🔄 Strategy 1: Installing latest openhands-resolver with dependency fixes...
+2025-06-10T16:46:08.2810392Z Collecting openhands-resolver
+2025-06-10T16:46:08.3150627Z   Downloading openhands_resolver-0.1.9-py3-none-any.whl.metadata (6.7 kB)
+2025-06-10T16:46:08.3240529Z Downloading openhands_resolver-0.1.9-py3-none-any.whl (198 kB)
+2025-06-10T16:46:08.3449635Z Installing collected packages: openhands-resolver
+2025-06-10T16:46:08.3708579Z Successfully installed openhands-resolver-0.1.9
+2025-06-10T16:46:08.8974444Z Collecting pandas>=2.2.3
+2025-06-10T16:46:08.9293654Z   Downloading pandas-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (91 kB)
+2025-06-10T16:46:09.0074179Z Collecting pytest>=8.3.3
+2025-06-10T16:46:09.0111391Z   Downloading pytest-8.4.0-py3-none-any.whl.metadata (7.7 kB)
+2025-06-10T16:46:09.0253258Z Collecting termcolor
+2025-06-10T16:46:09.0283460Z   Downloading termcolor-3.1.0-py3-none-any.whl.metadata (6.4 kB)
+2025-06-10T16:46:09.0326608Z Requirement already satisfied: pydantic in ./openhands_env/lib/python3.11/site-packages (2.11.5)
+2025-06-10T16:46:09.0560861Z Collecting requests
+2025-06-10T16:46:09.0596292Z   Downloading requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
+2025-06-10T16:46:09.0794064Z Collecting click
+2025-06-10T16:46:09.0822736Z   Downloading click-8.2.1-py3-none-any.whl.metadata (2.5 kB)
+2025-06-10T16:46:09.1226039Z Collecting rich
+2025-06-10T16:46:09.1257752Z   Downloading rich-14.0.0-py3-none-any.whl.metadata (18 kB)
+2025-06-10T16:46:09.3069198Z Collecting litellm
+2025-06-10T16:46:09.3108305Z   Downloading litellm-1.72.2-py3-none-any.whl.metadata (39 kB)
+2025-06-10T16:46:09.3681943Z Collecting openai
+2025-06-10T16:46:09.3711014Z   Downloading openai-1.85.0-py3-none-any.whl.metadata (25 kB)
+2025-06-10T16:46:09.4025811Z Collecting anthropic
+2025-06-10T16:46:09.4060695Z   Downloading anthropic-0.53.0-py3-none-any.whl.metadata (25 kB)
+2025-06-10T16:46:09.5873523Z Collecting numpy>=1.23.2 (from pandas>=2.2.3)
+2025-06-10T16:46:09.5905643Z   Downloading numpy-2.3.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata (62 kB)
+2025-06-10T16:46:09.6145986Z Collecting python-dateutil>=2.8.2 (from pandas>=2.2.3)
+2025-06-10T16:46:09.6176077Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+2025-06-10T16:46:09.6521545Z Collecting pytz>=2020.1 (from pandas>=2.2.3)
+2025-06-10T16:46:09.6557096Z   Downloading pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+2025-06-10T16:46:09.6733077Z Collecting tzdata>=2022.7 (from pandas>=2.2.3)
+2025-06-10T16:46:09.6769879Z   Downloading tzdata-2025.2-py2.py3-none-any.whl.metadata (1.4 kB)
+2025-06-10T16:46:09.6887734Z Collecting iniconfig>=1 (from pytest>=8.3.3)
+2025-06-10T16:46:09.6924071Z   Downloading iniconfig-2.1.0-py3-none-any.whl.metadata (2.7 kB)
+2025-06-10T16:46:09.6962310Z Requirement already satisfied: packaging>=20 in ./openhands_env/lib/python3.11/site-packages (from pytest>=8.3.3) (25.0)
+2025-06-10T16:46:09.7055897Z Collecting pluggy<2,>=1.5 (from pytest>=8.3.3)
+2025-06-10T16:46:09.7083932Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+2025-06-10T16:46:09.7286558Z Collecting pygments>=2.7.2 (from pytest>=8.3.3)
+2025-06-10T16:46:09.7315655Z   Downloading pygments-2.19.1-py3-none-any.whl.metadata (2.5 kB)
+2025-06-10T16:46:09.7438374Z Collecting annotated-types>=0.6.0 (from pydantic)
+2025-06-10T16:46:09.7467009Z   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+2025-06-10T16:46:10.3075023Z Collecting pydantic-core==2.33.2 (from pydantic)
+2025-06-10T16:46:10.3109448Z   Downloading pydantic_core-2.33.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+2025-06-10T16:46:10.3168579Z Requirement already satisfied: typing-extensions>=4.12.2 in ./openhands_env/lib/python3.11/site-packages (from pydantic) (4.14.0)
+2025-06-10T16:46:10.3257525Z Collecting typing-inspection>=0.4.0 (from pydantic)
+2025-06-10T16:46:10.3291134Z   Downloading typing_inspection-0.4.1-py3-none-any.whl.metadata (2.6 kB)
+2025-06-10T16:46:10.4019640Z Collecting charset_normalizer<4,>=2 (from requests)
+2025-06-10T16:46:10.4051584Z   Downloading charset_normalizer-3.4.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (35 kB)
+2025-06-10T16:46:10.4234736Z Collecting idna<4,>=2.5 (from requests)
+2025-06-10T16:46:10.4266663Z   Downloading idna-3.10-py3-none-any.whl.metadata (10 kB)
+2025-06-10T16:46:10.4553186Z Collecting urllib3<3,>=1.21.1 (from requests)
+2025-06-10T16:46:10.4585654Z   Downloading urllib3-2.4.0-py3-none-any.whl.metadata (6.5 kB)
+2025-06-10T16:46:10.4799048Z Collecting certifi>=2017.4.17 (from requests)
+2025-06-10T16:46:10.4830515Z   Downloading certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
+2025-06-10T16:46:10.5020112Z Collecting markdown-it-py>=2.2.0 (from rich)
+2025-06-10T16:46:10.5055367Z   Downloading markdown_it_py-3.0.0-py3-none-any.whl.metadata (6.9 kB)
+2025-06-10T16:46:11.0305894Z Collecting aiohttp (from litellm)
+2025-06-10T16:46:11.0342164Z   Downloading aiohttp-3.12.12-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.6 kB)
+2025-06-10T16:46:11.0575428Z Collecting httpx>=0.23.0 (from litellm)
+2025-06-10T16:46:11.0605154Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+2025-06-10T16:46:11.0905144Z Collecting importlib-metadata>=6.8.0 (from litellm)
+2025-06-10T16:46:11.0937539Z   Downloading importlib_metadata-8.7.0-py3-none-any.whl.metadata (4.8 kB)
+2025-06-10T16:46:11.1135196Z Collecting jinja2<4.0.0,>=3.1.2 (from litellm)
+2025-06-10T16:46:11.1163703Z   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+2025-06-10T16:46:11.1413765Z Collecting jsonschema<5.0.0,>=4.22.0 (from litellm)
+2025-06-10T16:46:11.1449850Z   Downloading jsonschema-4.24.0-py3-none-any.whl.metadata (7.8 kB)
+2025-06-10T16:46:11.1805068Z Collecting python-dotenv>=0.2.0 (from litellm)
+2025-06-10T16:46:11.1837700Z   Downloading python_dotenv-1.1.0-py3-none-any.whl.metadata (24 kB)
+2025-06-10T16:46:11.2641368Z Collecting tiktoken>=0.7.0 (from litellm)
+2025-06-10T16:46:11.2673640Z   Downloading tiktoken-0.9.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.7 kB)
+2025-06-10T16:46:11.4202418Z Collecting tokenizers (from litellm)
+2025-06-10T16:46:11.4235505Z   Downloading tokenizers-0.21.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+2025-06-10T16:46:11.4733507Z Collecting MarkupSafe>=2.0 (from jinja2<4.0.0,>=3.1.2->litellm)
+2025-06-10T16:46:11.4766359Z   Downloading MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+2025-06-10T16:46:11.4930658Z Collecting attrs>=22.2.0 (from jsonschema<5.0.0,>=4.22.0->litellm)
+2025-06-10T16:46:11.4960723Z   Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+2025-06-10T16:46:11.5163872Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<5.0.0,>=4.22.0->litellm)
+2025-06-10T16:46:11.5198759Z   Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+2025-06-10T16:46:11.5441421Z Collecting referencing>=0.28.4 (from jsonschema<5.0.0,>=4.22.0->litellm)
+2025-06-10T16:46:11.5473047Z   Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
+2025-06-10T16:46:11.8309551Z Collecting rpds-py>=0.7.1 (from jsonschema<5.0.0,>=4.22.0->litellm)
+2025-06-10T16:46:11.8344870Z   Downloading rpds_py-0.25.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+2025-06-10T16:46:11.8561271Z Collecting anyio<5,>=3.5.0 (from openai)
+2025-06-10T16:46:11.8600182Z   Downloading anyio-4.9.0-py3-none-any.whl.metadata (4.7 kB)
+2025-06-10T16:46:11.8754721Z Collecting distro<2,>=1.7.0 (from openai)
+2025-06-10T16:46:11.8786935Z   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+2025-06-10T16:46:11.9441878Z Collecting jiter<1,>=0.4.0 (from openai)
+2025-06-10T16:46:11.9474149Z   Downloading jiter-0.10.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+2025-06-10T16:46:11.9586163Z Collecting sniffio (from openai)
+2025-06-10T16:46:11.9617530Z   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+2025-06-10T16:46:11.9974488Z Collecting tqdm>4 (from openai)
+2025-06-10T16:46:12.0004554Z   Downloading tqdm-4.67.1-py3-none-any.whl.metadata (57 kB)
+2025-06-10T16:46:12.0325066Z Collecting httpcore==1.* (from httpx>=0.23.0->litellm)
+2025-06-10T16:46:12.0355052Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+2025-06-10T16:46:12.0510849Z Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.23.0->litellm)
+2025-06-10T16:46:12.0542212Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+2025-06-10T16:46:12.0885216Z Collecting zipp>=3.20 (from importlib-metadata>=6.8.0->litellm)
+2025-06-10T16:46:12.0913534Z   Downloading zipp-3.23.0-py3-none-any.whl.metadata (3.6 kB)
+2025-06-10T16:46:12.1130282Z Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich)
+2025-06-10T16:46:12.1201461Z   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+2025-06-10T16:46:12.1408401Z Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas>=2.2.3)
+2025-06-10T16:46:12.1439362Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2025-06-10T16:46:12.4425666Z Collecting regex>=2022.1.18 (from tiktoken>=0.7.0->litellm)
+2025-06-10T16:46:12.4462877Z   Downloading regex-2024.11.6-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (40 kB)
+2025-06-10T16:46:12.4809375Z Collecting aiohappyeyeballs>=2.5.0 (from aiohttp->litellm)
+2025-06-10T16:46:12.4839485Z   Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+2025-06-10T16:46:12.4965479Z Collecting aiosignal>=1.1.2 (from aiohttp->litellm)
+2025-06-10T16:46:12.4994209Z   Downloading aiosignal-1.3.2-py2.py3-none-any.whl.metadata (3.8 kB)
+2025-06-10T16:46:12.5630867Z Collecting frozenlist>=1.1.1 (from aiohttp->litellm)
+2025-06-10T16:46:12.5663166Z   Downloading frozenlist-1.7.0-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
+2025-06-10T16:46:12.8197052Z Collecting multidict<7.0,>=4.5 (from aiohttp->litellm)
+2025-06-10T16:46:12.8234287Z   Downloading multidict-6.4.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.3 kB)
+2025-06-10T16:46:12.8662838Z Collecting propcache>=0.2.0 (from aiohttp->litellm)
+2025-06-10T16:46:12.8694494Z   Downloading propcache-0.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (12 kB)
+2025-06-10T16:46:13.1045076Z Collecting yarl<2.0,>=1.17.0 (from aiohttp->litellm)
+2025-06-10T16:46:13.1081570Z   Downloading yarl-1.20.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (73 kB)
+2025-06-10T16:46:13.1817034Z Collecting huggingface-hub<1.0,>=0.16.4 (from tokenizers->litellm)
+2025-06-10T16:46:13.1848677Z   Downloading huggingface_hub-0.32.5-py3-none-any.whl.metadata (14 kB)
+2025-06-10T16:46:13.2250976Z Collecting filelock (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm)
+2025-06-10T16:46:13.2281822Z   Downloading filelock-3.18.0-py3-none-any.whl.metadata (2.9 kB)
+2025-06-10T16:46:13.2545552Z Collecting fsspec>=2023.5.0 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm)
+2025-06-10T16:46:13.2574708Z   Downloading fsspec-2025.5.1-py3-none-any.whl.metadata (11 kB)
+2025-06-10T16:46:13.3122647Z Collecting pyyaml>=5.1 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm)
+2025-06-10T16:46:13.3151874Z   Downloading PyYAML-6.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.1 kB)
+2025-06-10T16:46:13.3486428Z Collecting hf-xet<2.0.0,>=1.1.2 (from huggingface-hub<1.0,>=0.16.4->tokenizers->litellm)
+2025-06-10T16:46:13.3524454Z   Downloading hf_xet-1.1.3-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (879 bytes)
+2025-06-10T16:46:13.3699657Z Downloading pandas-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.4 MB)
+2025-06-10T16:46:13.4265528Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 232.1 MB/s eta 0:00:00
+2025-06-10T16:46:13.4302151Z Downloading pytest-8.4.0-py3-none-any.whl (363 kB)
+2025-06-10T16:46:13.4378134Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+2025-06-10T16:46:13.4434066Z Downloading termcolor-3.1.0-py3-none-any.whl (7.7 kB)
+2025-06-10T16:46:13.4488418Z Downloading pydantic_core-2.33.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.0 MB)
+2025-06-10T16:46:13.4605112Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 188.2 MB/s eta 0:00:00
+2025-06-10T16:46:13.4643810Z Downloading requests-2.32.4-py3-none-any.whl (64 kB)
+2025-06-10T16:46:13.4700495Z Downloading charset_normalizer-3.4.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (147 kB)
+2025-06-10T16:46:13.4764336Z Downloading idna-3.10-py3-none-any.whl (70 kB)
+2025-06-10T16:46:13.4827291Z Downloading urllib3-2.4.0-py3-none-any.whl (128 kB)
+2025-06-10T16:46:13.4886675Z Downloading click-8.2.1-py3-none-any.whl (102 kB)
+2025-06-10T16:46:13.4948025Z Downloading rich-14.0.0-py3-none-any.whl (243 kB)
+2025-06-10T16:46:13.5006881Z Downloading pygments-2.19.1-py3-none-any.whl (1.2 MB)
+2025-06-10T16:46:13.5096878Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 141.7 MB/s eta 0:00:00
+2025-06-10T16:46:13.5150045Z Downloading litellm-1.72.2-py3-none-any.whl (8.0 MB)
+2025-06-10T16:46:13.5593228Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 186.6 MB/s eta 0:00:00
+2025-06-10T16:46:13.5632582Z Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+2025-06-10T16:46:13.5694489Z Downloading jsonschema-4.24.0-py3-none-any.whl (88 kB)
+2025-06-10T16:46:13.5775840Z Downloading openai-1.85.0-py3-none-any.whl (730 kB)
+2025-06-10T16:46:13.5842354Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 730.2/730.2 kB 107.1 MB/s eta 0:00:00
+2025-06-10T16:46:13.5871024Z Downloading anyio-4.9.0-py3-none-any.whl (100 kB)
+2025-06-10T16:46:13.5926915Z Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+2025-06-10T16:46:13.5984566Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+2025-06-10T16:46:13.6043659Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+2025-06-10T16:46:13.6104904Z Downloading jiter-0.10.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (352 kB)
+2025-06-10T16:46:13.6192523Z Downloading anthropic-0.53.0-py3-none-any.whl (287 kB)
+2025-06-10T16:46:13.6268895Z Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+2025-06-10T16:46:13.6318346Z Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
+2025-06-10T16:46:13.6372618Z Downloading certifi-2025.4.26-py3-none-any.whl (159 kB)
+2025-06-10T16:46:13.6426559Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+2025-06-10T16:46:13.6482459Z Downloading importlib_metadata-8.7.0-py3-none-any.whl (27 kB)
+2025-06-10T16:46:13.6532853Z Downloading iniconfig-2.1.0-py3-none-any.whl (6.0 kB)
+2025-06-10T16:46:13.6583908Z Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+2025-06-10T16:46:13.6642948Z Downloading markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+2025-06-10T16:46:13.6697984Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+2025-06-10T16:46:13.6758589Z Downloading MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+2025-06-10T16:46:13.6812812Z Downloading numpy-2.3.0-cp311-cp311-manylinux_2_28_x86_64.whl (16.9 MB)
+2025-06-10T16:46:13.7540842Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 237.1 MB/s eta 0:00:00
+2025-06-10T16:46:13.7572843Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2025-06-10T16:46:13.7633739Z Downloading python_dotenv-1.1.0-py3-none-any.whl (20 kB)
+2025-06-10T16:46:13.7689563Z Downloading pytz-2025.2-py2.py3-none-any.whl (509 kB)
+2025-06-10T16:46:13.7761380Z Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
+2025-06-10T16:46:13.7817313Z Downloading rpds_py-0.25.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (386 kB)
+2025-06-10T16:46:13.7884070Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2025-06-10T16:46:13.7938674Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+2025-06-10T16:46:13.7998233Z Downloading tiktoken-0.9.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.2 MB)
+2025-06-10T16:46:13.8111535Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 127.5 MB/s eta 0:00:00
+2025-06-10T16:46:13.8187436Z Downloading regex-2024.11.6-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (792 kB)
+2025-06-10T16:46:13.8261430Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 792.7/792.7 kB 108.3 MB/s eta 0:00:00
+2025-06-10T16:46:13.8291211Z Downloading tqdm-4.67.1-py3-none-any.whl (78 kB)
+2025-06-10T16:46:13.8362899Z Downloading typing_inspection-0.4.1-py3-none-any.whl (14 kB)
+2025-06-10T16:46:13.8414865Z Downloading tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+2025-06-10T16:46:13.8488439Z Downloading zipp-3.23.0-py3-none-any.whl (10 kB)
+2025-06-10T16:46:13.8542354Z Downloading aiohttp-3.12.12-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.7 MB)
+2025-06-10T16:46:13.8653546Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 164.7 MB/s eta 0:00:00
+2025-06-10T16:46:13.8704625Z Downloading multidict-6.4.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (223 kB)
+2025-06-10T16:46:13.8770594Z Downloading yarl-1.20.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (348 kB)
+2025-06-10T16:46:13.8852742Z Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+2025-06-10T16:46:13.8904363Z Downloading aiosignal-1.3.2-py2.py3-none-any.whl (7.6 kB)
+2025-06-10T16:46:13.8964010Z Downloading frozenlist-1.7.0-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (235 kB)
+2025-06-10T16:46:13.9026148Z Downloading propcache-0.3.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (213 kB)
+2025-06-10T16:46:13.9088053Z Downloading tokenizers-0.21.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.0 MB)
+2025-06-10T16:46:13.9263102Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 183.2 MB/s eta 0:00:00
+2025-06-10T16:46:13.9294218Z Downloading huggingface_hub-0.32.5-py3-none-any.whl (512 kB)
+2025-06-10T16:46:13.9369988Z Downloading hf_xet-1.1.3-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.8 MB)
+2025-06-10T16:46:13.9601957Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 217.1 MB/s eta 0:00:00
+2025-06-10T16:46:13.9635933Z Downloading fsspec-2025.5.1-py3-none-any.whl (199 kB)
+2025-06-10T16:46:13.9698530Z Downloading PyYAML-6.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (762 kB)
+2025-06-10T16:46:13.9786618Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 763.0/763.0 kB 75.1 MB/s eta 0:00:00
+2025-06-10T16:46:13.9819962Z Downloading filelock-3.18.0-py3-none-any.whl (16 kB)
+2025-06-10T16:46:14.2159010Z Installing collected packages: pytz, zipp, urllib3, tzdata, typing-inspection, tqdm, termcolor, sniffio, six, rpds-py, regex, pyyaml, python-dotenv, pygments, pydantic-core, propcache, pluggy, numpy, multidict, mdurl, MarkupSafe, jiter, iniconfig, idna, hf-xet, h11, fsspec, frozenlist, filelock, distro, click, charset_normalizer, certifi, attrs, annotated-types, aiohappyeyeballs, yarl, requests, referencing, python-dateutil, pytest, markdown-it-py, jinja2, importlib-metadata, httpcore, anyio, aiosignal, tiktoken, rich, pandas, jsonschema-specifications, huggingface-hub, httpx, aiohttp, tokenizers, openai, jsonschema, anthropic, litellm
+2025-06-10T16:46:24.8235579Z 
+2025-06-10T16:46:24.8270240Z ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+2025-06-10T16:46:24.8272024Z openhands-resolver 0.1.9 requires openhands-ai<0.10.0,>=0.9.8, which is not installed.
+2025-06-10T16:46:24.8276513Z Successfully installed MarkupSafe-3.0.2 aiohappyeyeballs-2.6.1 aiohttp-3.12.12 aiosignal-1.3.2 annotated-types-0.7.0 anthropic-0.53.0 anyio-4.9.0 attrs-25.3.0 certifi-2025.4.26 charset_normalizer-3.4.2 click-8.2.1 distro-1.9.0 filelock-3.18.0 frozenlist-1.7.0 fsspec-2025.5.1 h11-0.16.0 hf-xet-1.1.3 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-0.32.5 idna-3.10 importlib-metadata-8.7.0 iniconfig-2.1.0 jinja2-3.1.6 jiter-0.10.0 jsonschema-4.24.0 jsonschema-specifications-2025.4.1 litellm-1.72.2 markdown-it-py-3.0.0 mdurl-0.1.2 multidict-6.4.4 numpy-2.3.0 openai-1.85.0 pandas-2.3.0 pluggy-1.6.0 propcache-0.3.2 pydantic-core-2.33.2 pygments-2.19.1 pytest-8.4.0 python-dateutil-2.9.0.post0 python-dotenv-1.1.0 pytz-2025.2 pyyaml-6.0.2 referencing-0.36.2 regex-2024.11.6 requests-2.32.4 rich-14.0.0 rpds-py-0.25.1 six-1.17.0 sniffio-1.3.1 termcolor-3.1.0 tiktoken-0.9.0 tokenizers-0.21.1 tqdm-4.67.1 typing-inspection-0.4.1 tzdata-2025.2 urllib3-2.4.0 yarl-1.20.1 zipp-3.23.0
+2025-06-10T16:46:25.5462407Z ✅ Basic import works
+2025-06-10T16:46:25.5484378Z ✅ Strategy 1 succeeded (resolver installed without full openhands-ai)
+2025-06-10T16:46:25.5485879Z ✅ OpenHands Resolver installed successfully
+2025-06-10T16:46:25.5573555Z ✅ Import test passed
+2025-06-10T16:46:25.5652397Z ##[group]Run # Check if required secrets are available
+2025-06-10T16:46:25.5653017Z [36;1m# Check if required secrets are available[0m
+2025-06-10T16:46:25.5653299Z [36;1mMISSING_SECRETS=""[0m
+2025-06-10T16:46:25.5653528Z [36;1mif [ -z "$LLM_API_KEY" ]; then[0m
+2025-06-10T16:46:25.5653798Z [36;1m  echo "❌ LLM_API_KEY secret is not set"[0m
+2025-06-10T16:46:25.5654067Z [36;1m  MISSING_SECRETS="true"[0m
+2025-06-10T16:46:25.5654284Z [36;1mfi[0m
+2025-06-10T16:46:25.5654449Z [36;1m[0m
+2025-06-10T16:46:25.5654629Z [36;1mif [ -z "$GITHUB_TOKEN" ]; then[0m
+2025-06-10T16:46:25.5654894Z [36;1m  echo "❌ GITHUB_TOKEN is not available"[0m
+2025-06-10T16:46:25.5655141Z [36;1m  MISSING_SECRETS="true"[0m
+2025-06-10T16:46:25.5655347Z [36;1mfi[0m
+2025-06-10T16:46:25.5655502Z [36;1m[0m
+2025-06-10T16:46:25.5655794Z [36;1m# Note: LLM_BASE_URL is optional - if not set, the resolver will use default endpoints[0m
+2025-06-10T16:46:25.5656225Z [36;1mif [ -n "$LLM_BASE_URL" ]; then[0m
+2025-06-10T16:46:25.5656517Z [36;1m  echo "✅ Using custom LLM_BASE_URL: $LLM_BASE_URL"[0m
+2025-06-10T16:46:25.5656793Z [36;1melse[0m
+2025-06-10T16:46:25.5657029Z [36;1m  echo "ℹ️ LLM_BASE_URL not set, using default endpoints"[0m
+2025-06-10T16:46:25.5657316Z [36;1mfi[0m
+2025-06-10T16:46:25.5657470Z [36;1m[0m
+2025-06-10T16:46:25.5657652Z [36;1m# Function to post comment to issue[0m
+2025-06-10T16:46:25.5657904Z [36;1mpost_comment() {[0m
+2025-06-10T16:46:25.5658107Z [36;1m  local message="$1"[0m
+2025-06-10T16:46:25.5658319Z [36;1m  curl -X POST \[0m
+2025-06-10T16:46:25.5658571Z [36;1m    -H "Authorization: token $GITHUB_TOKEN" \[0m
+2025-06-10T16:46:25.5658887Z [36;1m    -H "Accept: application/vnd.github.v3+json" \[0m
+2025-06-10T16:46:25.5659302Z [36;1m    "https://api.github.com/repos/$REPO_NAME/issues/$ISSUE_NUMBER/comments" \[0m
+2025-06-10T16:46:25.5659680Z [36;1m    -d "{\"body\":\"$message\"}"[0m
+2025-06-10T16:46:25.5659913Z [36;1m}[0m
+2025-06-10T16:46:25.5660070Z [36;1m[0m
+2025-06-10T16:46:25.5660247Z [36;1m# Handle different scenarios[0m
+2025-06-10T16:46:25.5660503Z [36;1mif [ "$RESOLVER_STATUS" = "failed" ]; then[0m
+2025-06-10T16:46:25.5660847Z [36;1m  echo "❌ Resolver installation failed, posting error comment"[0m
+2025-06-10T16:46:25.5661250Z [36;1m  ERROR_MSG="❌ **OpenHands Resolver Installation Failed**\\n\\n"[0m
+2025-06-10T16:46:25.5661912Z [36;1m  ERROR_MSG="${ERROR_MSG}All installation strategies failed, including the fallback resolver. "[0m
+2025-06-10T16:46:25.5662433Z [36;1m  ERROR_MSG="${ERROR_MSG}This indicates a more serious environment issue.\\n\\n"[0m
+2025-06-10T16:46:25.5662826Z [36;1m  ERROR_MSG="${ERROR_MSG}**What was tried:**\\n"[0m
+2025-06-10T16:46:25.5663160Z [36;1m  ERROR_MSG="${ERROR_MSG}1. ✅ Standard PyPI installation\\n"[0m
+2025-06-10T16:46:25.5663524Z [36;1m  ERROR_MSG="${ERROR_MSG}2. ✅ Pinned version installation\\n"[0m
+2025-06-10T16:46:25.5663887Z [36;1m  ERROR_MSG="${ERROR_MSG}3. ✅ GitHub source installation\\n"[0m
+2025-06-10T16:46:25.5664433Z [36;1m  ERROR_MSG="${ERROR_MSG}4. ✅ Fallback simple resolver\\n\\n"[0m
+2025-06-10T16:46:25.5664859Z [36;1m  ERROR_MSG="${ERROR_MSG}**Required secrets** (in repository Settings > Secrets):\\n"[0m
+2025-06-10T16:46:25.5665318Z [36;1m  ERROR_MSG="${ERROR_MSG}- \`LLM_API_KEY\`: Your OpenAI/Anthropic API key\\n"[0m
+2025-06-10T16:46:25.5665805Z [36;1m  ERROR_MSG="${ERROR_MSG}- \`LLM_MODEL\`: Model name (e.g., \`gpt-4\`, \`claude-3-5-sonnet-20241022\`)\\n"[0m
+2025-06-10T16:46:25.5666316Z [36;1m  ERROR_MSG="${ERROR_MSG}- \`LLM_BASE_URL\`: (Optional) Custom API endpoint URL\\n\\n"[0m
+2025-06-10T16:46:25.5666827Z [36;1m  ERROR_MSG="${ERROR_MSG}**Note**: GITHUB_TOKEN is automatically provided by GitHub Actions.\\n\\n"[0m
+2025-06-10T16:46:25.5667409Z [36;1m  ERROR_MSG="${ERROR_MSG}See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed setup instructions."[0m
+2025-06-10T16:46:25.5667852Z [36;1m  post_comment "$ERROR_MSG"[0m
+2025-06-10T16:46:25.5668275Z [36;1melif [ "$MISSING_SECRETS" = "true" ]; then[0m
+2025-06-10T16:46:25.5668630Z [36;1m  echo "❌ Required secrets missing, posting setup instructions"[0m
+2025-06-10T16:46:25.5669008Z [36;1m  SETUP_MSG="⚙️ **OpenHands Resolver Setup Required**\\n\\n"[0m
+2025-06-10T16:46:25.5669440Z [36;1m  SETUP_MSG="${SETUP_MSG}The resolver is installed but missing required secrets.\\n\\n"[0m
+2025-06-10T16:46:25.5669903Z [36;1m  SETUP_MSG="${SETUP_MSG}**To enable automatic issue resolution:**\\n\\n"[0m
+2025-06-10T16:46:25.5670368Z [36;1m  SETUP_MSG="${SETUP_MSG}1. Go to repository **Settings > Secrets and variables > Actions**\\n"[0m
+2025-06-10T16:46:25.5670795Z [36;1m  SETUP_MSG="${SETUP_MSG}2. Add these secrets:\\n"[0m
+2025-06-10T16:46:25.5671150Z [36;1m  SETUP_MSG="${SETUP_MSG}   - \`LLM_API_KEY\`: API key from [Claude]"[0m
+2025-06-10T16:46:25.5671558Z [36;1m  SETUP_MSG="${SETUP_MSG}(https://console.anthropic.com/) or [OpenAI]"[0m
+2025-06-10T16:46:25.5672106Z [36;1m  SETUP_MSG="${SETUP_MSG}(https://platform.openai.com/api-keys)\\n"[0m
+2025-06-10T16:46:25.5672517Z [36;1m  SETUP_MSG="${SETUP_MSG}   - \`LLM_MODEL\`: Model name "[0m
+2025-06-10T16:46:25.5672907Z [36;1m  SETUP_MSG="${SETUP_MSG}(e.g., \`anthropic/claude-3-5-sonnet-20241022\`)\\n"[0m
+2025-06-10T16:46:25.5673361Z [36;1m  SETUP_MSG="${SETUP_MSG}   - \`LLM_BASE_URL\`: (Optional) Custom API endpoint URL\\n\\n"[0m
+2025-06-10T16:46:25.5673872Z [36;1m  SETUP_MSG="${SETUP_MSG}**Note**: GITHUB_TOKEN is automatically provided by GitHub Actions.\\n\\n"[0m
+2025-06-10T16:46:25.5674344Z [36;1m  SETUP_MSG="${SETUP_MSG}3. **Enable workflow permissions:**\\n"[0m
+2025-06-10T16:46:25.5674779Z [36;1m  SETUP_MSG="${SETUP_MSG}   - Go to Settings > Actions > General > Workflow permissions\\n"[0m
+2025-06-10T16:46:25.5675229Z [36;1m  SETUP_MSG="${SETUP_MSG}   - Select \\\"Read and write permissions\\\"\\n"[0m
+2025-06-10T16:46:25.5675751Z [36;1m  SETUP_MSG="${SETUP_MSG}   - Enable \\\"Allow GitHub Actions to create and approve pull requests\\\"\\n\\n"[0m
+2025-06-10T16:46:25.5676356Z [36;1m  SETUP_MSG="${SETUP_MSG}Once configured, add the \`fix-me\` label to any issue for automatic resolution!"[0m
+2025-06-10T16:46:25.5676779Z [36;1m  post_comment "$SETUP_MSG"[0m
+2025-06-10T16:46:25.5677005Z [36;1melse[0m
+2025-06-10T16:46:25.5677224Z [36;1m  echo "✅ Attempting to run OpenHands resolver..."[0m
+2025-06-10T16:46:25.5677493Z [36;1m  [0m
+2025-06-10T16:46:25.5677681Z [36;1m  # Activate the virtual environment[0m
+2025-06-10T16:46:25.5677985Z [36;1m  if [ -n "$RESOLVER_VENV" ] && [ -d "$RESOLVER_VENV" ]; then[0m
+2025-06-10T16:46:25.5678340Z [36;1m    echo "🔄 Activating virtual environment: $RESOLVER_VENV"[0m
+2025-06-10T16:46:25.5678659Z [36;1m    source "$RESOLVER_VENV/bin/activate"[0m
+2025-06-10T16:46:25.5678894Z [36;1m  fi[0m
+2025-06-10T16:46:25.5679050Z [36;1m  [0m
+2025-06-10T16:46:25.5679233Z [36;1m  # Check if resolver can be imported[0m
+2025-06-10T16:46:25.5679510Z [36;1m  if [ "$RESOLVER_IMPORT" = "success" ]; then[0m
+2025-06-10T16:46:25.5679954Z [36;1m    echo "✅ Running resolver for issue $ISSUE_NUMBER"[0m
+2025-06-10T16:46:25.5680222Z [36;1m    [0m
+2025-06-10T16:46:25.5680434Z [36;1m    # Set up environment variables for the resolver[0m
+2025-06-10T16:46:25.5680723Z [36;1m    export OPENAI_API_KEY="$LLM_API_KEY"[0m
+2025-06-10T16:46:25.5680990Z [36;1m    export LLM_MODEL="$LLM_MODEL"[0m
+2025-06-10T16:46:25.5681251Z [36;1m    export LLM_BASE_URL="$LLM_BASE_URL"[0m
+2025-06-10T16:46:25.5681480Z [36;1m    [0m
+2025-06-10T16:46:25.5681778Z [36;1m    # Debug resolver selection[0m
+2025-06-10T16:46:25.5682043Z [36;1m    echo "🔍 Resolver selection debugging:"[0m
+2025-06-10T16:46:25.5682322Z [36;1m    echo "  RESOLVER_TYPE: '$RESOLVER_TYPE'"[0m
+2025-06-10T16:46:25.5682854Z [36;1m    echo "  openhands-resolver command: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'available' || echo 'not found')"[0m
+2025-06-10T16:46:25.5683783Z [36;1m    echo "  Python module test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'importable' || echo 'not importable')"[0m
+2025-06-10T16:46:25.5684641Z [36;1m    echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'importable' || echo 'not importable')"[0m
+2025-06-10T16:46:25.5685324Z [36;1m    echo "  simple_resolver.py: $([ -f 'simple_resolver.py' ] && echo 'exists' || echo 'missing')"[0m
+2025-06-10T16:46:25.5685692Z [36;1m    [0m
+2025-06-10T16:46:25.5685951Z [36;1m    # Try different resolver approaches based on what was installed[0m
+2025-06-10T16:46:25.5686358Z [36;1m    if [ "$RESOLVER_TYPE" = "simple" ] && [ -f "simple_resolver.py" ]; then[0m
+2025-06-10T16:46:25.5686752Z [36;1m      echo "🔄 Using simple resolver (fallback implementation)..."[0m
+2025-06-10T16:46:25.5687071Z [36;1m      python simple_resolver.py[0m
+2025-06-10T16:46:25.5687422Z [36;1m    elif [ "$RESOLVER_TYPE" = "simple" ] && [ -f "simple_resolver_fallback.py" ]; then[0m
+2025-06-10T16:46:25.5687806Z [36;1m      echo "🔄 Using simple resolver fallback..."[0m
+2025-06-10T16:46:25.5688104Z [36;1m      python simple_resolver_fallback.py[0m
+2025-06-10T16:46:25.5688501Z [36;1m    elif [ "$RESOLVER_TYPE" = "standard" ] && command -v openhands-resolver >/dev/null 2>&1; then[0m
+2025-06-10T16:46:25.5688924Z [36;1m      echo "🔄 Using openhands-resolver command..."[0m
+2025-06-10T16:46:25.5689200Z [36;1m      openhands-resolver \[0m
+2025-06-10T16:46:25.5689452Z [36;1m        --issue-number "$ISSUE_NUMBER" \[0m
+2025-06-10T16:46:25.5689711Z [36;1m        --repo "$REPO_NAME" \[0m
+2025-06-10T16:46:25.5689956Z [36;1m        --llm-model "$LLM_MODEL" \[0m
+2025-06-10T16:46:25.5690213Z [36;1m        --llm-api-key "$LLM_API_KEY"[0m
+2025-06-10T16:46:25.5690664Z [36;1m    elif [ "$RESOLVER_TYPE" = "standard" ] && python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then[0m
+2025-06-10T16:46:25.5691134Z [36;1m      echo "🔄 Using Python module..."[0m
+2025-06-10T16:46:25.5691423Z [36;1m      python -m openhands_resolver.resolve_issue \[0m
+2025-06-10T16:46:25.5691823Z [36;1m        --issue-number "$ISSUE_NUMBER" \[0m
+2025-06-10T16:46:25.5692079Z [36;1m        --repo "$REPO_NAME" \[0m
+2025-06-10T16:46:25.5692316Z [36;1m        --llm-model "$LLM_MODEL" \[0m
+2025-06-10T16:46:25.5692573Z [36;1m        --llm-api-key "$LLM_API_KEY"[0m
+2025-06-10T16:46:25.5693023Z [36;1m    elif [ "$RESOLVER_TYPE" = "standard" ] && python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then[0m
+2025-06-10T16:46:25.5693483Z [36;1m      echo "🔄 Using direct import..."[0m
+2025-06-10T16:46:25.5694130Z [36;1m      python -c "from openhands_resolver import resolve_issue; resolve_issue.main(issue_number='$ISSUE_NUMBER', repo='$REPO_NAME', llm_model='$LLM_MODEL', llm_api_key='$LLM_API_KEY')"[0m
+2025-06-10T16:46:25.5694808Z [36;1m    elif [ -f "simple_resolver.py" ]; then[0m
+2025-06-10T16:46:25.5695147Z [36;1m      echo "🔄 Fallback: Using simple resolver (no type specified)..."[0m
+2025-06-10T16:46:25.5695606Z [36;1m      python simple_resolver.py[0m
+2025-06-10T16:46:25.5695842Z [36;1m    else[0m
+2025-06-10T16:46:25.5696056Z [36;1m      echo "❌ No working resolver interface found"[0m
+2025-06-10T16:46:25.5696396Z [36;1m      IMPORT_ERROR="❌ **OpenHands Resolver Interface Error**\\n\\n"[0m
+2025-06-10T16:46:25.5696879Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}The resolver was installed but no working interface was found.\\n\\n"[0m
+2025-06-10T16:46:25.5697348Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}**Debugging info:**\\n"[0m
+2025-06-10T16:46:25.5697722Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}- Resolver status: $RESOLVER_STATUS\\n"[0m
+2025-06-10T16:46:25.5698139Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}- Import status: $RESOLVER_IMPORT\\n"[0m
+2025-06-10T16:46:25.5698533Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}- Resolver type: $RESOLVER_TYPE\\n"[0m
+2025-06-10T16:46:25.5698955Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}- Virtual env: $RESOLVER_VENV\\n\\n"[0m
+2025-06-10T16:46:25.5699438Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}**Available files:**\\n"[0m
+2025-06-10T16:46:25.5699989Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}- simple_resolver.py: $([ -f 'simple_resolver.py' ] && echo 'exists' || echo 'missing')\\n"[0m
+2025-06-10T16:46:25.5700784Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}- openhands-resolver command: $(command -v openhands-resolver >/dev/null && echo 'available' || echo 'not found')\\n\\n"[0m
+2025-06-10T16:46:25.5701427Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}Please check the [workflow logs]"[0m
+2025-06-10T16:46:25.5701994Z [36;1m      WORKFLOW_URL="https://github.com/qinx18/compiler-mcp-server/actions/runs/15565359140"[0m
+2025-06-10T16:46:25.5702515Z [36;1m      IMPORT_ERROR="${IMPORT_ERROR}($WORKFLOW_URL) for detailed error information."[0m
+2025-06-10T16:46:25.5702893Z [36;1m      post_comment "$IMPORT_ERROR"[0m
+2025-06-10T16:46:25.5703123Z [36;1m    fi[0m
+2025-06-10T16:46:25.5703286Z [36;1m  else[0m
+2025-06-10T16:46:25.5703505Z [36;1m    echo "❌ Resolver import failed, posting error"[0m
+2025-06-10T16:46:25.5703857Z [36;1m    IMPORT_ERROR="❌ **OpenHands Resolver Import Error**\\n\\n"[0m
+2025-06-10T16:46:25.5704289Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}The resolver was installed but cannot be imported. "[0m
+2025-06-10T16:46:25.5704772Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}This may be due to missing dependencies.\\n\\n"[0m
+2025-06-10T16:46:25.5705177Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}**Debugging info:**\\n"[0m
+2025-06-10T16:46:25.5705547Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}- Resolver status: $RESOLVER_STATUS\\n"[0m
+2025-06-10T16:46:25.5705960Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}- Import status: $RESOLVER_IMPORT\\n"[0m
+2025-06-10T16:46:25.5706361Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}- Virtual env: $RESOLVER_VENV\\n\\n"[0m
+2025-06-10T16:46:25.5706753Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}Please check the [workflow logs]"[0m
+2025-06-10T16:46:25.5707221Z [36;1m    WORKFLOW_URL="https://github.com/qinx18/compiler-mcp-server/actions/runs/15565359140"[0m
+2025-06-10T16:46:25.5707763Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}($WORKFLOW_URL) for detailed error information.\\n\\n"[0m
+2025-06-10T16:46:25.5708210Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}For manual resolution, see the "[0m
+2025-06-10T16:46:25.5708655Z [36;1m    IMPORT_ERROR="${IMPORT_ERROR}[TROUBLESHOOTING.md](./TROUBLESHOOTING.md) guide."[0m
+2025-06-10T16:46:25.5709031Z [36;1m    post_comment "$IMPORT_ERROR"[0m
+2025-06-10T16:46:25.5709266Z [36;1m  fi[0m
+2025-06-10T16:46:25.5709429Z [36;1mfi[0m
+2025-06-10T16:46:25.5758982Z shell: /usr/bin/bash -e {0}
+2025-06-10T16:46:25.5759202Z env:
+2025-06-10T16:46:25.5759432Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:46:25.5759836Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.12/x64/lib/pkgconfig
+2025-06-10T16:46:25.5760222Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:46:25.5760571Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:46:25.5761063Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.12/x64
+2025-06-10T16:46:25.5761419Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.12/x64/lib
+2025-06-10T16:46:25.5761877Z   RESOLVER_TYPE: standard
+2025-06-10T16:46:25.5762088Z   RESOLVER_STATUS: success
+2025-06-10T16:46:25.5762295Z   RESOLVER_VENV: openhands_env
+2025-06-10T16:46:25.5762503Z   RESOLVER_IMPORT: success
+2025-06-10T16:46:25.5762979Z   GITHUB_TOKEN: ***
+2025-06-10T16:46:25.5763178Z   GITHUB_USERNAME: qinx18
+2025-06-10T16:46:25.5763953Z   LLM_API_KEY: ***
+2025-06-10T16:46:25.5764143Z   LLM_MODEL: ***
+2025-06-10T16:46:25.5764315Z   LLM_BASE_URL: 
+2025-06-10T16:46:25.5764484Z   ISSUE_NUMBER: 6
+2025-06-10T16:46:25.5764693Z   REPO_NAME: qinx18/compiler-mcp-server
+2025-06-10T16:46:25.5764925Z ##[endgroup]
+2025-06-10T16:46:25.5831879Z ℹ️ LLM_BASE_URL not set, using default endpoints
+2025-06-10T16:46:25.5835376Z ✅ Attempting to run OpenHands resolver...
+2025-06-10T16:46:25.5835747Z 🔄 Activating virtual environment: openhands_env
+2025-06-10T16:46:25.5838353Z ✅ Running resolver for issue 6
+2025-06-10T16:46:25.5838823Z 🔍 Resolver selection debugging:
+2025-06-10T16:46:25.5839064Z   RESOLVER_TYPE: 'standard'
+2025-06-10T16:46:25.5845285Z   openhands-resolver command: not found
+2025-06-10T16:46:25.5963188Z   Python module test: not importable
+2025-06-10T16:46:25.6078597Z   Direct import test: not importable
+2025-06-10T16:46:25.6083311Z   simple_resolver.py: exists
+2025-06-10T16:46:25.6305439Z 🔄 Fallback: Using simple resolver (no type specified)...
+2025-06-10T16:46:42.9243698Z 🔍 Environment variables:
+2025-06-10T16:46:42.9244198Z   REPO_NAME: qinx18/compiler-mcp-server
+2025-06-10T16:46:42.9244635Z   ISSUE_NUMBER: 6
+2025-06-10T16:46:42.9245034Z   GITHUB_TOKEN: ✅ Set
+2025-06-10T16:46:42.9245423Z   LLM_API_KEY: ✅ Set
+2025-06-10T16:46:42.9245961Z   LLM_MODEL: ***
+2025-06-10T16:46:42.9246323Z   LLM_BASE_URL: Not set (using default)
+2025-06-10T16:46:42.9246731Z 🔄 Resolving issue #6 in qinx18/compiler-mcp-server
+2025-06-10T16:46:42.9247098Z 🔍 Testing dependencies...
+2025-06-10T16:46:42.9247445Z ✅ OpenAI package is available
+2025-06-10T16:46:42.9247767Z 🌐 Testing network connectivity...
+2025-06-10T16:46:42.9248089Z ✅ Basic internet connectivity: 200
+2025-06-10T16:46:42.9248438Z ✅ OpenAI API is reachable and API key is valid
+2025-06-10T16:46:42.9249092Z 📋 Available GPT models: gpt-4-0613, gpt-4, gpt-3.5-turbo, gpt-4o-audio-preview-2025-06-03, ***-nano
+2025-06-10T16:46:42.9249651Z 🤖 Calling *** for issue analysis...
+2025-06-10T16:46:42.9267146Z 🔍 Debug: Calling LLM with model='***', base_url=''
+2025-06-10T16:46:42.9267798Z 🔍 Debug: API key starts with: sk-proj-M4...
+2025-06-10T16:46:42.9268298Z 🔍 Debug: Empty base_url detected, will use default API endpoint
+2025-06-10T16:46:42.9268704Z ✅ Using valid model: ***
+2025-06-10T16:46:42.9269000Z 🤖 Using OpenAI API with model: ***
+2025-06-10T16:46:42.9269290Z ✅ Posted AI analysis to issue
+2025-06-10T16:46:43.0089927Z Post job cleanup.
+2025-06-10T16:46:43.1687374Z Post job cleanup.
+2025-06-10T16:46:43.2603999Z [command]/usr/bin/git version
+2025-06-10T16:46:43.2640069Z git version 2.49.0
+2025-06-10T16:46:43.2682593Z Temporarily overriding HOME='/home/runner/work/_temp/93317ba3-361f-4b4d-a276-e92d9c1d0297' before making global git config changes
+2025-06-10T16:46:43.2683799Z Adding repository directory to the temporary git global config as a safe directory
+2025-06-10T16:46:43.2694956Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/compiler-mcp-server/compiler-mcp-server
+2025-06-10T16:46:43.2727784Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2025-06-10T16:46:43.2759757Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2025-06-10T16:46:43.2980423Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-06-10T16:46:43.3001070Z http.https://github.com/.extraheader
+2025-06-10T16:46:43.3014049Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2025-06-10T16:46:43.3044413Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2025-06-10T16:46:43.3367338Z Cleaning up orphan processes

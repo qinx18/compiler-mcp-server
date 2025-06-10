@@ -3,102 +3,135 @@
 Simple test to verify the resolver fix logic is correct.
 This tests the verification logic without doing full installations.
 """
+
 import os
 import subprocess
+
 
 def test_verification_logic():
     """Test the verification logic that was fixed"""
     print("🧪 Testing verification logic...")
-    
+
     # Simulate the verification checks from the workflow
     print("  🔍 Simulating resolver interface checks...")
-    
+
     # Test 1: Command interface (will fail - no openhands-resolver installed)
     try:
-        result = subprocess.run("command -v openhands-resolver", shell=True, capture_output=True)
+        result = subprocess.run(
+            "command -v openhands-resolver", shell=True, capture_output=True
+        )
         cmd_available = result.returncode == 0
     except:
         cmd_available = False
-    
+
     # Test 2: Module import interface (will fail - no openhands package)
     try:
-        result = subprocess.run('python -c "import openhands_resolver.resolve_issue"', shell=True, capture_output=True)
+        result = subprocess.run(
+            'python -c "import openhands_resolver.resolve_issue"',
+            shell=True,
+            capture_output=True,
+        )
         module_available = result.returncode == 0
     except:
         module_available = False
-    
+
     # Test 3: Direct import interface (will fail - no openhands package)
     try:
-        result = subprocess.run('python -c "from openhands_resolver import resolve_issue"', shell=True, capture_output=True)
+        result = subprocess.run(
+            'python -c "from openhands_resolver import resolve_issue"',
+            shell=True,
+            capture_output=True,
+        )
         direct_available = result.returncode == 0
     except:
         direct_available = False
-    
+
     print(f"    Command interface: {'✅ PASS' if cmd_available else '❌ FAIL'}")
-    print(f"    Module import interface: {'✅ PASS' if module_available else '❌ FAIL'}")
-    print(f"    Direct import interface: {'✅ PASS' if direct_available else '❌ FAIL'}")
-    
+    print(
+        f"    Module import interface: {'✅ PASS' if module_available else '❌ FAIL'}"
+    )
+    print(
+        f"    Direct import interface: {'✅ PASS' if direct_available else '❌ FAIL'}"
+    )
+
     # Apply the NEW verification logic (the fix)
     interfaces_available = cmd_available or module_available or direct_available
-    
-    print(f"\n  🔧 NEW verification logic (fixed):")
-    print(f"    At least one interface available: {'✅ YES' if interfaces_available else '❌ NO'}")
-    
+
+    print("\n  🔧 NEW verification logic (fixed):")
+    print(
+        f"    At least one interface available: {'✅ YES' if interfaces_available else '❌ NO'}"
+    )
+
     if interfaces_available:
         print("    ✅ Would claim SUCCESS and set RESOLVER_TYPE=standard")
         result = "success"
     else:
         print("    ⚠️ Would FAIL and fall back to next strategy")
         result = "fallback"
-    
+
     # This demonstrates the fix: when no interfaces work, it correctly falls back
     # instead of claiming success with a broken installation
     expected_result = "fallback"  # Since we don't have openhands-resolver installed
-    
+
     if result == expected_result:
         print(f"  ✅ Verification logic working correctly: {result}")
         return True
     else:
-        print(f"  ❌ Verification logic failed: got {result}, expected {expected_result}")
+        print(
+            f"  ❌ Verification logic failed: got {result}, expected {expected_result}"
+        )
         return False
+
 
 def test_simple_resolver_availability():
     """Test that simple resolver is available as fallback"""
     print("🧪 Testing simple resolver availability...")
-    
+
     if not os.path.exists("simple_resolver.py"):
         print("  ❌ simple_resolver.py not found")
         return False
-    
+
     # Test that it's executable
     try:
-        result = subprocess.run("python simple_resolver.py", shell=True, capture_output=True, text=True, timeout=5)
+        result = subprocess.run(
+            "python simple_resolver.py",
+            shell=True,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
         # Should show environment variable check or help
-        if "Environment variables:" in result.stdout or "Missing required" in result.stdout:
+        if (
+            "Environment variables:" in result.stdout
+            or "Missing required" in result.stdout
+        ):
             print("  ✅ Simple resolver is executable and working")
             return True
         else:
             print(f"  ❌ Simple resolver output unexpected: {result.stdout[:100]}")
             return False
     except subprocess.TimeoutExpired:
-        print("  ✅ Simple resolver is executable (timed out waiting for input, which is expected)")
+        print(
+            "  ✅ Simple resolver is executable (timed out waiting for input, which is expected)"
+        )
         return True
     except Exception as e:
         print(f"  ❌ Simple resolver test failed: {e}")
         return False
 
+
 def test_workflow_file_changes():
     """Test that the workflow file has the expected changes"""
     print("🧪 Testing workflow file changes...")
-    
+
     workflow_file = ".github/workflows/openhands-resolver.yml"
     if not os.path.exists(workflow_file):
         print(f"  ❌ Workflow file not found: {workflow_file}")
         return False
-    
-    with open(workflow_file, 'r') as f:
+
+    with open(workflow_file) as f:
         content = f.read()
-    
+
     # Check for key changes
     checks = [
         ("pip install openhands-resolver", "Strategy 2 now installs with dependencies"),
@@ -106,7 +139,7 @@ def test_workflow_file_changes():
         ("at least one resolver interface works", "New success message"),
         ("no working resolver interfaces", "New failure message"),
     ]
-    
+
     all_passed = True
     for check, description in checks:
         if check in content:
@@ -114,23 +147,24 @@ def test_workflow_file_changes():
         else:
             print(f"  ❌ Missing: {description}")
             all_passed = False
-    
+
     return all_passed
+
 
 def main():
     """Run all tests"""
     print("🔧 Testing OpenHands Resolver Installation Fix")
     print("=" * 50)
-    
+
     tests = [
         ("Verification Logic", test_verification_logic),
         ("Simple Resolver Availability", test_simple_resolver_availability),
         ("Workflow File Changes", test_workflow_file_changes),
     ]
-    
+
     passed = 0
     total = len(tests)
-    
+
     for test_name, test_func in tests:
         print(f"\n🧪 Running: {test_name}")
         try:
@@ -141,10 +175,10 @@ def main():
                 print(f"❌ {test_name}: FAILED")
         except Exception as e:
             print(f"❌ {test_name}: ERROR - {e}")
-    
+
     print("\n" + "=" * 50)
     print(f"📊 Test Results: {passed}/{total} tests passed")
-    
+
     if passed == total:
         print("🎉 All tests passed! The resolver fix is working correctly.")
         print("\n📋 Summary of fix:")
@@ -160,6 +194,7 @@ def main():
     else:
         print("⚠️ Some tests failed. The fix may need additional work.")
         return False
+
 
 if __name__ == "__main__":
     success = main()

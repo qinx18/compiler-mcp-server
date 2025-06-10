@@ -1,5 +1,7 @@
-mcp
+# Core dependencies
+mcp>=1.0.0
+pydantic>=2.0.0
+typing-extensions>=4.0.0
+
+# Optional MCP framework
 fastmcp>=0.1.0
-pytest>=7.0.0
-pytest-asyncio>=0.21.0
-pytest-mock>=3.10.0

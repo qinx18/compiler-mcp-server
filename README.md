@@ -1,27 +1,75 @@
 # Compiler MCP Server
 
-An intelligent compiler server that provides detailed vectorization analysis and optimization suggestions for C/C++ code.
+An intelligent compiler MCP server focused on vectorization analysis for C/C++ code.
 
 ## Features
 
 - Loop-carried dependency detection
-- Vectorization failure analysis
-- Optimization suggestions
+- Vectorization failure analysis  
+- Optimization suggestions for C/C++ code
 - Stateful compilation sessions
+- MCP protocol compliance
+- Real-time compilation feedback
 
-## Installation
+## Quick Start
+
+### Installation
 
 ```bash
-pip install -r requirements.txt
+# Install in development mode
+make install-dev
+
+# Or manually
+pip install -e ".[dev]"
+pre-commit install
 ```
 
-## Development Setup
+## Development
 
-For contributors, install pre-commit hooks for code quality:
+### Prerequisites
+
+- Python 3.8+
+- GCC or compatible C/C++ compiler
+- Git
+
+### Development Setup
 
 ```bash
-pip install pre-commit
-pre-commit install
+# Clone and setup
+git clone <repository-url>
+cd compiler-mcp-server
+make dev-setup
+```
+
+### Code Quality
+
+This project uses modern Python development practices:
+
+- **Type Checking**: MyPy for static type analysis
+- **Linting**: Ruff for fast Python linting
+- **Formatting**: Black and Ruff for code formatting
+- **Security**: Bandit for security vulnerability scanning
+- **Pre-commit Hooks**: Automated quality checks
+- **Testing**: Pytest with coverage reporting
+- **CI/CD**: GitHub Actions for continuous integration
+
+### Available Commands
+
+```bash
+# Development workflow
+make help              # Show all available commands
+make quality           # Run all quality checks
+make test              # Run tests with coverage
+make lint              # Run linting
+make format            # Format code
+make type-check        # Run type checking
+make security-check    # Run security analysis
+make pre-commit        # Run pre-commit hooks
+make clean             # Clean build artifacts
+make build             # Build package
+
+# Quick development cycle
+make format lint type-check test
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development guidelines.

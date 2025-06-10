@@ -92,7 +92,9 @@ class CompilerMCPServer:
     Maintains compilation state and provides rich feedback for code optimization.
     """
 
-    def __init__(self, compiler_path: str = "gcc", base_flags: List[str] = None):
+    def __init__(
+        self, compiler_path: str = "gcc", base_flags: Optional[List[str]] = None
+    ):
         """
         Initialize the compiler server with specified compiler and flags.
 
@@ -405,7 +407,7 @@ for (int i = N/2; i < N; i++) {{
 
 // Step 1: Read phase (vectorizable)
 for (int i = 0; i < N; i++) {{
-    temp[i] = {dep.variable}[{dep.read_indices[0] if dep.read_indices else 'i'}];
+    temp[i] = {dep.variable}[{dep.read_indices[0] if dep.read_indices else "i"}];
 }}
 
 // Step 2: Compute phase (vectorizable)
@@ -415,7 +417,7 @@ for (int i = 0; i < N; i++) {{
 
 // Step 3: Write phase (vectorizable)
 for (int i = 0; i < N; i++) {{
-    {dep.variable}[{dep.write_indices[0] if dep.write_indices else 'i'}] = temp[i];
+    {dep.variable}[{dep.write_indices[0] if dep.write_indices else "i"}] = temp[i];
 }}
 
 // This transformation eliminates the loop-carried dependency

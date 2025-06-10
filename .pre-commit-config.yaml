@@ -30,12 +30,22 @@ repos:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
 
-  # Linting
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.1.1
+  # Linting with ruff (faster than flake8)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
     hooks:
-      - id: flake8
-        args: ['--max-line-length=88', '--extend-ignore=E203,W503,E501']
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  # Type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests, types-setuptools]
+        args: [--ignore-missing-imports, --scripts-are-modules]
+        exclude: ^(tests/|test_output/|openhands_env/)
 
   # Security checks (lighter for this project)
   - repo: https://github.com/PyCQA/bandit
@@ -43,4 +53,4 @@ repos:
     hooks:
       - id: bandit
         args: ['--skip', 'B101,B601,B404,B603,B104']
-        exclude: ^(tests/|test_output/)
+        exclude: ^(tests/|test_output/|openhands_env/)
