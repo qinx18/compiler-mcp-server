@@ -28,14 +28,17 @@ def call_llm(prompt: str, api_key: str, model: str, base_url: Optional[str] = No
         # Normalize model name
         clean_model = model.replace("openai/", "").replace("anthropic/", "")
         
-        # Fix common model name issues
-        if clean_model == "gpt-4.1":
-            clean_model = "gpt-4"
-            print(f"🔧 Fixed model name: gpt-4.1 -> gpt-4")
-        elif clean_model == "gpt-4o":
-            clean_model = "gpt-4o"
-        elif clean_model == "gpt-3.5-turbo":
-            clean_model = "gpt-3.5-turbo"
+        # Validate and normalize model names (keep valid models as-is)
+        valid_models = [
+            "gpt-4.1", "gpt-4.1-mini", "gpt-4o", "gpt-4o-mini", 
+            "gpt-4", "gpt-4-turbo", "gpt-3.5-turbo",
+            "claude-3-opus", "claude-3-sonnet", "claude-3-haiku"
+        ]
+        
+        if clean_model in valid_models:
+            print(f"✅ Using valid model: {clean_model}")
+        else:
+            print(f"⚠️ Unknown model '{clean_model}', proceeding anyway")
         
         if "gpt" in model.lower() or "openai" in model.lower() or not ("claude" in model.lower() or "anthropic" in model.lower()):
             # OpenAI API (default)
