@@ -17,6 +17,7 @@ jobs:
       (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'fix-me')) ||
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@openhands-agent'))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -39,8 +40,10 @@ jobs:
           echo "Trying specific version combination..."
           if pip install "openhands-resolver==0.3.1" "openhands-ai==0.13.1" --force-reinstall; then
             echo "✅ Installed with specific versions"
+            echo "RESOLVER_STATUS=success" >> $GITHUB_ENV
           elif pip install "openhands-resolver==0.2.9" --force-reinstall; then
             echo "✅ Installed older version"
+            echo "RESOLVER_STATUS=success" >> $GITHUB_ENV
           else
             echo "❌ Standard installation failed, trying alternative approach..."
             # Strategy 2: Install in isolated environment
@@ -49,10 +52,10 @@ jobs:
             pip install --upgrade pip
             if pip install openhands-resolver; then
               echo "✅ Installed in virtual environment"
-              echo "RESOLVER_VENV=resolver_venv" >> $GITHUB_ENV
+              echo "RESOLVER_STATUS=venv" >> $GITHUB_ENV
             else
               echo "❌ All installation strategies failed"
-              echo "RESOLVER_FAILED=true" >> $GITHUB_ENV
+              echo "RESOLVER_STATUS=failed" >> $GITHUB_ENV
             fi
           fi
 
@@ -63,8 +66,11 @@ jobs:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_MODEL: ${{ secrets.LLM_MODEL || 'anthropic/claude-3-5-sonnet-20241022' }}
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO_NAME: ${{ github.repository }}
         run: |
           # Check if required secrets are available
+          MISSING_SECRETS=""
           if [ -z "$LLM_API_KEY" ]; then
             echo "❌ LLM_API_KEY secret is not set"
             MISSING_SECRETS="true"
@@ -75,39 +81,74 @@ jobs:
             MISSING_SECRETS="true"
           fi
           
-          # Try to run the resolver if installation succeeded and secrets are available
-          if [ "$RESOLVER_FAILED" = "true" ]; then
-            echo "❌ Resolver installation failed, posting error comment"
+          # Function to post comment to issue
+          post_comment() {
+            local message="$1"
             curl -X POST \
               -H "Authorization: token $GITHUB_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -d '{"body":"❌ **OpenHands Resolver Installation Failed**\n\nThe resolver encountered dependency conflicts during installation. This is a known issue with the current version.\n\n**Possible solutions:**\n1. Check if newer versions are available\n2. Set up the required secrets (see below)\n3. Try manual resolution using the instructions in the README\n\n**Required secrets** (in repository Settings > Secrets):\n- `PAT_TOKEN`: GitHub Personal Access Token with repo permissions\n- `LLM_API_KEY`: API key for your LLM service (Claude, OpenAI, etc.)\n- `LLM_MODEL`: Model name (e.g., `anthropic/claude-3-5-sonnet-20241022`)\n\nSee [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed setup instructions."}'
+              "https://api.github.com/repos/$REPO_NAME/issues/$ISSUE_NUMBER/comments" \
+              -d "{\"body\":\"$message\"}"
+          }
+          
+          # Handle different scenarios
+          if [ "$RESOLVER_STATUS" = "failed" ]; then
+            echo "❌ Resolver installation failed, posting error comment"
+            ERROR_MSG="❌ **OpenHands Resolver Installation Failed**\\n\\n"
+            ERROR_MSG="${ERROR_MSG}The resolver encountered dependency conflicts during installation. "
+            ERROR_MSG="${ERROR_MSG}This is a known issue with the current version.\\n\\n"
+            ERROR_MSG="${ERROR_MSG}**Possible solutions:**\\n"
+            ERROR_MSG="${ERROR_MSG}1. Check if newer versions are available\\n"
+            ERROR_MSG="${ERROR_MSG}2. Set up the required secrets (see below)\\n"
+            ERROR_MSG="${ERROR_MSG}3. Try manual resolution using the instructions in the README\\n\\n"
+            ERROR_MSG="${ERROR_MSG}**Required secrets** (in repository Settings > Secrets):\\n"
+            ERROR_MSG="${ERROR_MSG}- \`PAT_TOKEN\`: GitHub Personal Access Token with repo permissions\\n"
+            ERROR_MSG="${ERROR_MSG}- \`LLM_API_KEY\`: API key for your LLM service (Claude, OpenAI, etc.)\\n"
+            ERROR_MSG="${ERROR_MSG}- \`LLM_MODEL\`: Model name (e.g., \`anthropic/claude-3-5-sonnet-20241022\`)\\n\\n"
+            ERROR_MSG="${ERROR_MSG}See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed setup instructions."
+            post_comment "$ERROR_MSG"
           elif [ "$MISSING_SECRETS" = "true" ]; then
             echo "❌ Required secrets missing, posting setup instructions"
-            curl -X POST \
-              -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -d '{"body":"⚙️ **OpenHands Resolver Setup Required**\n\nThe resolver is installed but missing required secrets.\n\n**To enable automatic issue resolution:**\n\n1. Go to repository **Settings > Secrets and variables > Actions**\n2. Add these secrets:\n   - `PAT_TOKEN`: [Create a Personal Access Token](https://github.com/settings/tokens) with repo permissions\n   - `LLM_API_KEY`: API key from [Claude](https://console.anthropic.com/) or [OpenAI](https://platform.openai.com/api-keys)\n   - `LLM_MODEL`: Model name (e.g., `anthropic/claude-3-5-sonnet-20241022`)\n\n3. **Enable workflow permissions:**\n   - Go to Settings > Actions > General > Workflow permissions\n   - Select \"Read and write permissions\"\n   - Enable \"Allow GitHub Actions to create and approve pull requests\"\n\nOnce configured, add the `fix-me` label to any issue for automatic resolution!"}'
+            SETUP_MSG="⚙️ **OpenHands Resolver Setup Required**\\n\\n"
+            SETUP_MSG="${SETUP_MSG}The resolver is installed but missing required secrets.\\n\\n"
+            SETUP_MSG="${SETUP_MSG}**To enable automatic issue resolution:**\\n\\n"
+            SETUP_MSG="${SETUP_MSG}1. Go to repository **Settings > Secrets and variables > Actions**\\n"
+            SETUP_MSG="${SETUP_MSG}2. Add these secrets:\\n"
+            SETUP_MSG="${SETUP_MSG}   - \`PAT_TOKEN\`: [Create a Personal Access Token]"
+            SETUP_MSG="${SETUP_MSG}(https://github.com/settings/tokens) with repo permissions\\n"
+            SETUP_MSG="${SETUP_MSG}   - \`LLM_API_KEY\`: API key from [Claude]"
+            SETUP_MSG="${SETUP_MSG}(https://console.anthropic.com/) or [OpenAI]"
+            SETUP_MSG="${SETUP_MSG}(https://platform.openai.com/api-keys)\\n"
+            SETUP_MSG="${SETUP_MSG}   - \`LLM_MODEL\`: Model name "
+            SETUP_MSG="${SETUP_MSG}(e.g., \`anthropic/claude-3-5-sonnet-20241022\`)\\n\\n"
+            SETUP_MSG="${SETUP_MSG}3. **Enable workflow permissions:**\\n"
+            SETUP_MSG="${SETUP_MSG}   - Go to Settings > Actions > General > Workflow permissions\\n"
+            SETUP_MSG="${SETUP_MSG}   - Select \\\"Read and write permissions\\\"\\n"
+            SETUP_MSG="${SETUP_MSG}   - Enable \\\"Allow GitHub Actions to create and approve pull requests\\\"\\n\\n"
+            SETUP_MSG="${SETUP_MSG}Once configured, add the \`fix-me\` label to any issue for automatic resolution!"
+            post_comment "$SETUP_MSG"
           else
             echo "✅ Attempting to run OpenHands resolver..."
             # Activate virtual environment if it was created
-            if [ "$RESOLVER_VENV" = "resolver_venv" ]; then
+            if [ "$RESOLVER_STATUS" = "venv" ]; then
               source resolver_venv/bin/activate
             fi
             
             if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
-              echo "✅ Running resolver for issue ${{ github.event.issue.number }}"
+              echo "✅ Running resolver for issue $ISSUE_NUMBER"
               python -m openhands_resolver.resolve_issue \
-                --issue-number ${{ github.event.issue.number }} \
-                --repo ${{ github.repository }}
+                --issue-number "$ISSUE_NUMBER" \
+                --repo "$REPO_NAME"
             else
               echo "❌ Resolver import failed, posting error"
-              curl -X POST \
-                -H "Authorization: token $GITHUB_TOKEN" \
-                -H "Accept: application/vnd.github.v3+json" \
-                https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-                -d '{"body":"❌ **OpenHands Resolver Import Error**\n\nThe resolver was installed but cannot be imported. This may be due to missing dependencies.\n\nPlease check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for detailed error information.\n\nFor manual resolution, see the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) guide."}'
+              IMPORT_ERROR="❌ **OpenHands Resolver Import Error**\\n\\n"
+              IMPORT_ERROR="${IMPORT_ERROR}The resolver was installed but cannot be imported. "
+              IMPORT_ERROR="${IMPORT_ERROR}This may be due to missing dependencies.\\n\\n"
+              IMPORT_ERROR="${IMPORT_ERROR}Please check the [workflow logs]"
+              WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              IMPORT_ERROR="${IMPORT_ERROR}($WORKFLOW_URL) for detailed error information.\\n\\n"
+              IMPORT_ERROR="${IMPORT_ERROR}For manual resolution, see the "
+              IMPORT_ERROR="${IMPORT_ERROR}[TROUBLESHOOTING.md](./TROUBLESHOOTING.md) guide."
+              post_comment "$IMPORT_ERROR"
             fi
           fi
