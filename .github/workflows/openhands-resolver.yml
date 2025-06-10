@@ -76,20 +76,23 @@ jobs:
               # Verify the installation actually works
               echo "🔍 Verifying Strategy 2 installation..."
               echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"
-              echo "  Import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
+              echo "  Basic import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
+              echo "  Module import test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
+              echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
               
-              # For standard resolver, we need at least the Python import to work
-              # The command is nice to have but not required (resolver selection can handle Python-only)
-              if python -c "import openhands_resolver" 2>/dev/null; then
+              # For standard resolver, we need at least one of the Python import methods that resolver selection will use
+              # Test the same import paths that resolver selection logic uses (lines 275, 282)
+              if python -c "import openhands_resolver.resolve_issue" 2>/dev/null || python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
                 if command -v openhands-resolver >/dev/null 2>&1; then
-                  echo "✅ Strategy 2 succeeded and verified (both command and import work)"
+                  echo "✅ Strategy 2 succeeded and verified (command and resolver imports work)"
                 else
-                  echo "✅ Strategy 2 succeeded and verified (import works, command not available)"
+                  echo "✅ Strategy 2 succeeded and verified (resolver imports work, command not available)"
                 fi
                 INSTALL_SUCCESS=true
                 echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
               else
-                echo "⚠️ Strategy 2 installed but verification failed (import required), trying Strategy 3..."
+                echo "⚠️ Strategy 2 installed but verification failed (resolver imports required), trying Strategy 3..."
+                echo "   Note: Basic 'import openhands_resolver' might work, but resolver selection needs 'resolve_issue' module"
                 # Don't set RESOLVER_TYPE here - let it fall through to other strategies
               fi
             else
@@ -101,20 +104,23 @@ jobs:
                 # Verify the installation actually works
                 echo "🔍 Verifying Strategy 3 installation..."
                 echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"
-                echo "  Import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
+                echo "  Basic import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
+                echo "  Module import test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
+                echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
                 
-                # For standard resolver, we need at least the Python import to work
-                # The command is nice to have but not required (resolver selection can handle Python-only)
-                if python -c "import openhands_resolver" 2>/dev/null; then
+                # For standard resolver, we need at least one of the Python import methods that resolver selection will use
+                # Test the same import paths that resolver selection logic uses (lines 275, 282)
+                if python -c "import openhands_resolver.resolve_issue" 2>/dev/null || python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
                   if command -v openhands-resolver >/dev/null 2>&1; then
-                    echo "✅ Strategy 3 succeeded and verified (both command and import work)"
+                    echo "✅ Strategy 3 succeeded and verified (command and resolver imports work)"
                   else
-                    echo "✅ Strategy 3 succeeded and verified (import works, command not available)"
+                    echo "✅ Strategy 3 succeeded and verified (resolver imports work, command not available)"
                   fi
                   INSTALL_SUCCESS=true
                   echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
                 else
-                  echo "⚠️ Strategy 3 installed but verification failed (import required), trying Strategy 4..."
+                  echo "⚠️ Strategy 3 installed but verification failed (resolver imports required), trying Strategy 4..."
+                  echo "   Note: Basic 'import openhands_resolver' might work, but resolver selection needs 'resolve_issue' module"
                   # Don't set RESOLVER_TYPE here - let it fall through to Strategy 4
                 fi
               else
