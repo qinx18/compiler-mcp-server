@@ -45,7 +45,7 @@ class MCPProtocolTester:
         self, method: str, params: Optional[Dict] = None
     ) -> Dict[str, Any]:
         """Create a properly formatted MCP notification (no response expected)"""
-        notification = {"jsonrpc": "2.0", "method": method}
+        notification: Dict[str, Any] = {"jsonrpc": "2.0", "method": method}
         if params:
             notification["params"] = params
         return notification
@@ -237,8 +237,8 @@ class TestMCPProtocolCompliance:
         assert error_response["jsonrpc"] == "2.0"
         assert "id" in error_response
         assert "error" in error_response
-        assert "code" in error_response["error"]
-        assert "message" in error_response["error"]
+        assert "code" in error_response["error"]  # type: ignore[operator]
+        assert "message" in error_response["error"]  # type: ignore[operator]
 
 
 class TestMCPIntegration:

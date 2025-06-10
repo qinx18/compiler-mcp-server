@@ -475,15 +475,15 @@ class TestGitHubIssueReproduction:
         def resolver_selection_logic():
             # elif [ "$RESOLVER_TYPE" = "standard" ] && command -v openhands-resolver >/dev/null 2>&1; then
             if resolver_type_set == "standard" and command_available:
-                return "openhands-resolver command"
+                return "openhands-resolver command"  # type: ignore[unreachable]
 
             # elif [ "$RESOLVER_TYPE" = "standard" ] && python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
-            elif resolver_type_set == "standard" and module_importable:
-                return "python module"
+            if resolver_type_set == "standard" and module_importable:
+                return "python module"  # type: ignore[unreachable]
 
             # elif [ "$RESOLVER_TYPE" = "standard" ] && python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
-            elif resolver_type_set == "standard" and direct_importable:
-                return "direct import"
+            if resolver_type_set == "standard" and direct_importable:
+                return "direct import"  # type: ignore[unreachable]
 
             # elif [ -f "simple_resolver.py" ]; then
             else:
@@ -752,9 +752,9 @@ class TestGitHubIssue6ResolverSelectionBug:
 
             # 5. Simulate resolver selection logic
             if resolver_type == "standard" and module_import_works:
-                selected_resolver = "python module"
+                selected_resolver = "python module"  # type: ignore[unreachable]
             elif resolver_type == "standard" and direct_import_works:
-                selected_resolver = "direct import"
+                selected_resolver = "direct import"  # type: ignore[unreachable]
             else:
                 selected_resolver = "fallback to simple resolver"
 

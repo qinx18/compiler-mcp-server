@@ -45,7 +45,7 @@ class MCPServerCommunicator:
 
             # Check if server is still running
             if self.server_process.poll() is not None:
-                stderr = self.server_process.stderr.read()
+                stderr = self.server_process.stderr.read() if self.server_process.stderr else ""
                 raise RuntimeError(f"Server failed to start: {stderr}")
 
             return True
@@ -74,7 +74,7 @@ class MCPServerCommunicator:
                 try:
                     line = self.server_process.stdout.readline()
                     if line.strip():
-                        return json.loads(line.strip())
+                        return json.loads(line.strip())  # type: ignore[no-any-return]
                 except json.JSONDecodeError:
                     continue
                 except Exception:
@@ -101,7 +101,7 @@ class MCPServerCommunicator:
         self, method: str, params: Optional[Dict] = None
     ) -> Dict[str, Any]:
         """Create a JSON-RPC notification"""
-        notification = {"jsonrpc": "2.0", "method": method}
+        notification: Dict[str, Any] = {"jsonrpc": "2.0", "method": method}
         if params:
             notification["params"] = params
         return notification

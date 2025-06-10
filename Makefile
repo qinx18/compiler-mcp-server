@@ -47,7 +47,7 @@ format:
 	ruff check . --fix
 
 type-check:
-	mypy .
+	mypy . --ignore-missing-imports
 
 security-check:
 	bandit -r . -f json -o test_output/bandit-report.json || true

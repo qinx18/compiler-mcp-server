@@ -21,7 +21,9 @@ class TestMCPConnection:
 
             # Test FastMCP availability
             if importlib.util.find_spec("fastmcp") is not None:
-                from fastmcp import FastMCP  # noqa: F401
+                from fastmcp import (
+                    FastMCP,  # noqa: F401 # type: ignore[import-not-found]
+                )
 
             from solution_for_s1113 import mcp
 
@@ -46,7 +48,7 @@ class TestMCPConnection:
             # Server should be waiting for input, not crashing
             process.wait(timeout=2)
             # If we get here, process ended (bad)
-            stderr = process.stderr.read()
+            stderr = process.stderr.read() if process.stderr else ""
             pytest.fail(f"Server crashed on startup: {stderr}")
         except subprocess.TimeoutExpired:
             # Good! Server is still running
