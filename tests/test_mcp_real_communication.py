@@ -212,9 +212,9 @@ class TestRealMCPCommunication:
                 ]
 
                 for expected_tool in expected_tools:
-                    assert expected_tool in tool_names, (
-                        f"Expected tool '{expected_tool}' not found"
-                    )
+                    assert (
+                        expected_tool in tool_names
+                    ), f"Expected tool '{expected_tool}' not found"
 
                 print(f"✅ Found {len(tools)} tools: {tool_names}")
             else:
@@ -328,9 +328,9 @@ class TestMCPProtocolEdgeCases:
 
             # Server should not crash
             await asyncio.sleep(0.5)
-            assert mcp_server.server_process.poll() is None, (
-                "Server crashed on invalid JSON"
-            )
+            assert (
+                mcp_server.server_process.poll() is None
+            ), "Server crashed on invalid JSON"
 
     @pytest.mark.asyncio
     async def test_unknown_method_handling(self, mcp_server):
@@ -394,7 +394,7 @@ class TestMCPPerformance:
         requests = []
 
         # Send multiple tool list requests rapidly
-        for i in range(5):
+        for _i in range(5):
             request = mcp_server.create_request("tools/list")
             requests.append(request)
             mcp_server.send_message(request)
@@ -407,9 +407,9 @@ class TestMCPPerformance:
                 responses.append(response)
 
         # Should handle all requests
-        assert len(responses) >= 3, (
-            f"Expected at least 3 responses, got {len(responses)}"
-        )
+        assert (
+            len(responses) >= 3
+        ), f"Expected at least 3 responses, got {len(responses)}"
 
         # All responses should be valid
         for response in responses:
@@ -422,28 +422,28 @@ class TestMCPPerformance:
         large_code = """
         #include <stdio.h>
         #define SIZE 10000
-        
+
         int main() {
             int a[SIZE], b[SIZE], c[SIZE];
-            
+
             // Initialize arrays
             for(int i = 0; i < SIZE; i++) {
                 a[i] = i;
                 b[i] = i * 2;
             }
-            
+
             // Loop with dependency - should fail vectorization
             for(int i = 1; i < SIZE; i++) {
                 a[i] = a[i-1] + b[i] * c[i];
             }
-            
+
             // Another complex loop
             for(int i = 0; i < SIZE-1; i++) {
                 for(int j = 0; j < SIZE-1; j++) {
                     a[i] = a[i] + b[j] * c[i+j];
                 }
             }
-            
+
             return 0;
         }
         """
@@ -471,9 +471,9 @@ class TestMCPPerformance:
             print(f"✅ Large code analysis completed in {processing_time:.2f} seconds")
 
             # Should complete within reasonable time
-            assert processing_time < 10.0, (
-                f"Analysis took too long: {processing_time:.2f}s"
-            )
+            assert (
+                processing_time < 10.0
+            ), f"Analysis took too long: {processing_time:.2f}s"
 
 
 if __name__ == "__main__":

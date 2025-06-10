@@ -6,7 +6,7 @@ This bypasses dependency conflicts by implementing core functionality only.
 
 import os
 import sys
-from typing import Optional
+from typing import Any, Optional
 
 import requests
 
@@ -18,8 +18,8 @@ def get_issue_content(repo: str, issue_number: str, github_token: str) -> dict:
         "Authorization": f"token {github_token}",
         "Accept": "application/vnd.github.v3+json",
     }
-    response = requests.get(url, headers=headers)
-    return response.json()
+    response = requests.get(url, headers=headers, timeout=30)
+    return response.json()  # type: ignore[no-any-return]
 
 
 def call_llm(
@@ -59,6 +59,7 @@ def call_llm(
         else:
             print(f"⚠️ Unknown model '{clean_model}', proceeding anyway")
 
+        client: Any
         if (
             "gpt" in model.lower()
             or "openai" in model.lower()
@@ -79,7 +80,7 @@ def call_llm(
                 max_tokens=4000,
                 temperature=0.7,
             )
-            return response.choices[0].message.content
+            return response.choices[0].message.content or ""
         elif "claude" in model.lower() or "anthropic" in model.lower():
             # Anthropic API
             print(f"🤖 Using Anthropic API with model: {clean_model}")
@@ -95,7 +96,7 @@ def call_llm(
                 max_tokens=4000,
                 messages=[{"role": "user", "content": prompt}],
             )
-            return response.content[0].text
+            return response.content[0].text  # type: ignore[no-any-return]
         else:
             # Generic API using requests
             print(f"🤖 Using generic API with model: {clean_model}")
@@ -109,9 +110,9 @@ def call_llm(
                 "max_tokens": 4000,
             }
             url = base_url or "https://api.openai.com/v1/chat/completions"
-            response = requests.post(url, headers=headers, json=data)
+            response = requests.post(url, headers=headers, json=data, timeout=60)
             response.raise_for_status()
-            return response.json()["choices"][0]["message"]["content"]
+            return response.json()["choices"][0]["message"]["content"]  # type: ignore[no-any-return]
     except Exception as e:
         import traceback
 
@@ -133,7 +134,7 @@ def call_llm(
         return error_msg
 
 
-def post_comment(repo: str, issue_number: str, comment: str, github_token: str):
+def post_comment(repo: str, issue_number: str, comment: str, github_token: str) -> None:
     """Post comment to GitHub issue"""
     url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
     headers = {
@@ -141,10 +142,10 @@ def post_comment(repo: str, issue_number: str, comment: str, github_token: str):
         "Accept": "application/vnd.github.v3+json",
     }
     data = {"body": comment}
-    requests.post(url, headers=headers, json=data)
+    requests.post(url, headers=headers, json=data, timeout=30)
 
 
-def main():
+def main() -> None:
     repo = os.environ.get("REPO_NAME")
     issue_number = os.environ.get("ISSUE_NUMBER")
     github_token = os.environ.get("GITHUB_TOKEN")
@@ -164,14 +165,21 @@ def main():
         print("❌ Missing required environment variables")
         sys.exit(1)
 
+    # Type narrowing - after this point, these variables are guaranteed to be non-None
+    assert repo is not None
+    assert issue_number is not None
+    assert github_token is not None
+    assert llm_api_key is not None
+
     print(f"🔄 Resolving issue #{issue_number} in {repo}")
 
     # Test dependencies and network connectivity
     print("🔍 Testing dependencies...")
     try:
-        import openai
+        import importlib.util
 
-        print("✅ OpenAI package is available")
+        if importlib.util.find_spec("openai") is not None:
+            print("✅ OpenAI package is available")
     except ImportError as e:
         print(f"❌ OpenAI package not available: {e}")
 

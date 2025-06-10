@@ -14,7 +14,7 @@ You need to add these secrets to your GitHub repository:
 
 ### 2. `LLM_MODEL` (Required)
 - **What**: The model name you want to use
-- **OpenAI examples**: 
+- **OpenAI examples**:
   - `gpt-4` (GPT-4)
   - `gpt-4-turbo` (GPT-4 Turbo)
   - `gpt-3.5-turbo` (GPT-3.5 Turbo)
@@ -46,7 +46,7 @@ You need to add these secrets to your GitHub repository:
 ### Step 3: Verify Setup
 After adding secrets, you should see:
 - ✅ `LLM_API_KEY`
-- ✅ `LLM_MODEL` 
+- ✅ `LLM_MODEL`
 - ✅ `LLM_BASE_URL` (optional)
 
 ## 🧪 Testing the Setup
@@ -129,12 +129,12 @@ The resolver triggers when:
 
 ## 🎯 Benefits
 
-✅ **Uses your API key** instead of OpenHands platform credits  
-✅ **Robust installation** with 4 fallback strategies  
-✅ **Automatic issue resolution** when labeled or mentioned  
-✅ **Direct cost control** - you pay your LLM provider directly  
-✅ **Multiple LLM support** - OpenAI, Anthropic, or custom endpoints  
-✅ **Guaranteed functionality** - simple resolver always works as fallback  
+✅ **Uses your API key** instead of OpenHands platform credits
+✅ **Robust installation** with 4 fallback strategies
+✅ **Automatic issue resolution** when labeled or mentioned
+✅ **Direct cost control** - you pay your LLM provider directly
+✅ **Multiple LLM support** - OpenAI, Anthropic, or custom endpoints
+✅ **Guaranteed functionality** - simple resolver always works as fallback
 
 ## 🆘 Need Help?
 

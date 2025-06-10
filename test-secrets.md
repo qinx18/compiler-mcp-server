@@ -7,10 +7,10 @@ Go to your repository: **Settings > Secrets and variables > Actions**
 
 Add these secrets:
 - [ ] `PAT_TOKEN` - GitHub Personal Access Token ([create here](https://github.com/settings/tokens))
-- [ ] `LLM_API_KEY` - API key from [Claude](https://console.anthropic.com/) or [OpenAI](https://platform.openai.com/api-keys)  
+- [ ] `LLM_API_KEY` - API key from [Claude](https://console.anthropic.com/) or [OpenAI](https://platform.openai.com/api-keys)
 - [ ] `LLM_MODEL` - Model name (e.g., `anthropic/claude-3-5-sonnet-20241022`)
 
-### ✅ Step 2: Workflow Permissions  
+### ✅ Step 2: Workflow Permissions
 Go to: **Settings > Actions > General > Workflow permissions**
 - [ ] Select "Read and write permissions"
 - [ ] Enable "Allow GitHub Actions to create and approve pull requests"
@@ -38,7 +38,7 @@ Go to: **Settings > Actions > General > Workflow permissions**
 
 Once properly configured:
 1. Add `fix-me` label to any issue
-2. Workflow runs automatically  
+2. Workflow runs automatically
 3. OpenHands resolver attempts to fix the issue
 4. Creates a pull request with the solution
 

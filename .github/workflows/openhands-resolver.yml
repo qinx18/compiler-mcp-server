@@ -34,23 +34,23 @@ jobs:
       - name: Install OpenHands Resolver (robust dependency handling)
         run: |
           echo "🔧 Installing OpenHands Resolver with dependency conflict resolution..."
-          
+
           # Create a clean virtual environment to avoid conflicts
           python -m venv openhands_env
           source openhands_env/bin/activate
-          
+
           # Upgrade core tools
           pip install --upgrade pip setuptools wheel
-          
+
           # Install dependencies in specific order to avoid conflicts
           echo "📦 Installing core dependencies..."
           pip install --no-deps packaging
           pip install --no-deps typing-extensions
           pip install --no-deps pydantic
-          
+
           # Try multiple installation strategies
           INSTALL_SUCCESS=false
-          
+
           # Strategy 1: Install latest openhands-resolver with dependency workarounds
           echo "🔄 Strategy 1: Installing latest openhands-resolver with dependency fixes..."
           # Try installing without the problematic openhands-ai dependency first
@@ -66,7 +66,7 @@ jobs:
             fi
           else
             echo "❌ Strategy 1 failed, trying Strategy 2..."
-            
+
             # Strategy 2: Try installing older compatible version of openhands-resolver
             echo "🔄 Strategy 2: Installing older compatible openhands-resolver version..."
             # Try installing an older version that might not have the e2b dependency issue
@@ -78,17 +78,17 @@ jobs:
               echo "  Basic import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
               echo "  Module import test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
               echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
-              
+
               # Check if we have a working resolver interface
               # The resolver selection logic can work with: command, module import, direct import, or simple fallback
               RESOLVER_INTERFACES_AVAILABLE=false
-              
+
               # Check command line interface
               if command -v openhands-resolver >/dev/null 2>&1; then
                 echo "✅ Command line interface available"
                 RESOLVER_INTERFACES_AVAILABLE=true
               fi
-              
+
               # Check Python module interfaces (used by resolver selection logic)
               if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
                 echo "✅ Module import interface available"
@@ -97,7 +97,7 @@ jobs:
                 echo "✅ Direct import interface available"
                 RESOLVER_INTERFACES_AVAILABLE=true
               fi
-              
+
               # If any interface works, consider it a success
               if [ "$RESOLVER_INTERFACES_AVAILABLE" = true ]; then
                 echo "✅ Strategy 2 succeeded and verified (at least one resolver interface works)"
@@ -110,7 +110,7 @@ jobs:
               fi
             else
               echo "❌ Strategy 2 failed, trying Strategy 3..."
-              
+
               # Strategy 3: Install from GitHub directly (fixed path)
               echo "🔄 Strategy 3: Installing from GitHub source..."
               # Install the main OpenHands package from GitHub, then extract just the resolver
@@ -122,17 +122,17 @@ jobs:
                 echo "  Basic import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
                 echo "  Module import test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
                 echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
-                
+
                 # Check if we have a working resolver interface
                 # The resolver selection logic can work with: command, module import, direct import, or simple fallback
                 RESOLVER_INTERFACES_AVAILABLE=false
-                
+
                 # Check command line interface
                 if command -v openhands-resolver >/dev/null 2>&1; then
                   echo "✅ Command line interface available"
                   RESOLVER_INTERFACES_AVAILABLE=true
                 fi
-                
+
                 # Check Python module interfaces (used by resolver selection logic)
                 if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
                   echo "✅ Module import interface available"
@@ -141,7 +141,7 @@ jobs:
                   echo "✅ Direct import interface available"
                   RESOLVER_INTERFACES_AVAILABLE=true
                 fi
-                
+
                 # If any interface works, consider it a success
                 if [ "$RESOLVER_INTERFACES_AVAILABLE" = true ]; then
                   echo "✅ Strategy 3 succeeded and verified (at least one resolver interface works)"
@@ -154,15 +154,15 @@ jobs:
                 fi
               else
                 echo "❌ Strategy 3 failed, trying Strategy 4..."
-                
+
                 # Strategy 4: Last resort - use simple resolver fallback
                 echo "🔄 Strategy 4: Last resort - using simple resolver fallback..."
                 echo "⚠️ All standard resolver installation methods failed"
                 echo "   This may be due to dependency conflicts or package availability issues"
-                
+
                 # Install basic dependencies for simple resolver
                 pip install requests openai anthropic litellm termcolor
-                
+
                 # Ensure simple resolver is available and executable
                 if [ -f "simple_resolver.py" ]; then
                   chmod +x simple_resolver.py
@@ -176,13 +176,13 @@ jobs:
               fi
             fi
           fi
-          
+
           # Set environment variable for later steps
           if [ "$INSTALL_SUCCESS" = true ]; then
             echo "RESOLVER_STATUS=success" >> $GITHUB_ENV
             echo "RESOLVER_VENV=openhands_env" >> $GITHUB_ENV
             echo "✅ OpenHands Resolver installed successfully"
-            
+
             # Test the installation
             if python -c "import openhands_resolver; print('✅ Import test passed')"; then
               echo "RESOLVER_IMPORT=success" >> $GITHUB_ENV
@@ -211,19 +211,19 @@ jobs:
             echo "❌ LLM_API_KEY secret is not set"
             MISSING_SECRETS="true"
           fi
-          
+
           if [ -z "$GITHUB_TOKEN" ]; then
             echo "❌ GITHUB_TOKEN is not available"
             MISSING_SECRETS="true"
           fi
-          
+
           # Note: LLM_BASE_URL is optional - if not set, the resolver will use default endpoints
           if [ -n "$LLM_BASE_URL" ]; then
             echo "✅ Using custom LLM_BASE_URL: $LLM_BASE_URL"
           else
             echo "ℹ️ LLM_BASE_URL not set, using default endpoints"
           fi
-          
+
           # Function to post comment to issue
           post_comment() {
             local message="$1"
@@ -233,7 +233,7 @@ jobs:
               "https://api.github.com/repos/$REPO_NAME/issues/$ISSUE_NUMBER/comments" \
               -d "{\"body\":\"$message\"}"
           }
-          
+
           # Handle different scenarios
           if [ "$RESOLVER_STATUS" = "failed" ]; then
             echo "❌ Resolver installation failed, posting error comment"
@@ -274,22 +274,22 @@ jobs:
             post_comment "$SETUP_MSG"
           else
             echo "✅ Attempting to run OpenHands resolver..."
-            
+
             # Activate the virtual environment
             if [ -n "$RESOLVER_VENV" ] && [ -d "$RESOLVER_VENV" ]; then
               echo "🔄 Activating virtual environment: $RESOLVER_VENV"
               source "$RESOLVER_VENV/bin/activate"
             fi
-            
+
             # Check if resolver can be imported
             if [ "$RESOLVER_IMPORT" = "success" ]; then
               echo "✅ Running resolver for issue $ISSUE_NUMBER"
-              
+
               # Set up environment variables for the resolver
               export OPENAI_API_KEY="$LLM_API_KEY"
               export LLM_MODEL="$LLM_MODEL"
               export LLM_BASE_URL="$LLM_BASE_URL"
-              
+
               # Debug resolver selection
               echo "🔍 Resolver selection debugging:"
               echo "  RESOLVER_TYPE: '$RESOLVER_TYPE'"
@@ -297,7 +297,7 @@ jobs:
               echo "  Python module test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'importable' || echo 'not importable')"
               echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'importable' || echo 'not importable')"
               echo "  simple_resolver.py: $([ -f 'simple_resolver.py' ] && echo 'exists' || echo 'missing')"
-              
+
               # Try different resolver approaches based on what was installed
               if [ "$RESOLVER_TYPE" = "simple" ] && [ -f "simple_resolver.py" ]; then
                 echo "🔄 Using simple resolver (fallback implementation)..."

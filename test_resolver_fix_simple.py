@@ -8,7 +8,7 @@ import os
 import subprocess
 
 
-def test_verification_logic():
+def test_verification_logic() -> bool:
     """Test the verification logic that was fixed"""
     print("🧪 Testing verification logic...")
 
@@ -17,33 +17,33 @@ def test_verification_logic():
 
     # Test 1: Command interface (will fail - no openhands-resolver installed)
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B602 B607
             "command -v openhands-resolver", shell=True, capture_output=True
         )
         cmd_available = result.returncode == 0
-    except:
+    except Exception:
         cmd_available = False
 
     # Test 2: Module import interface (will fail - no openhands package)
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B602 B607
             'python -c "import openhands_resolver.resolve_issue"',
             shell=True,
             capture_output=True,
         )
         module_available = result.returncode == 0
-    except:
+    except Exception:
         module_available = False
 
     # Test 3: Direct import interface (will fail - no openhands package)
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B602 B607
             'python -c "from openhands_resolver import resolve_issue"',
             shell=True,
             capture_output=True,
         )
         direct_available = result.returncode == 0
-    except:
+    except Exception:
         direct_available = False
 
     print(f"    Command interface: {'✅ PASS' if cmd_available else '❌ FAIL'}")
@@ -64,26 +64,26 @@ def test_verification_logic():
 
     if interfaces_available:
         print("    ✅ Would claim SUCCESS and set RESOLVER_TYPE=standard")
-        result = "success"
+        verification_result = "success"
     else:
         print("    ⚠️ Would FAIL and fall back to next strategy")
-        result = "fallback"
+        verification_result = "fallback"
 
     # This demonstrates the fix: when no interfaces work, it correctly falls back
     # instead of claiming success with a broken installation
     expected_result = "fallback"  # Since we don't have openhands-resolver installed
 
-    if result == expected_result:
-        print(f"  ✅ Verification logic working correctly: {result}")
+    if verification_result == expected_result:
+        print(f"  ✅ Verification logic working correctly: {verification_result}")
         return True
     else:
         print(
-            f"  ❌ Verification logic failed: got {result}, expected {expected_result}"
+            f"  ❌ Verification logic failed: got {verification_result}, expected {expected_result}"
         )
         return False
 
 
-def test_simple_resolver_availability():
+def test_simple_resolver_availability() -> bool:
     """Test that simple resolver is available as fallback"""
     print("🧪 Testing simple resolver availability...")
 
@@ -93,7 +93,7 @@ def test_simple_resolver_availability():
 
     # Test that it's executable
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B602 B607
             "python simple_resolver.py",
             shell=True,
             capture_output=True,
@@ -120,7 +120,7 @@ def test_simple_resolver_availability():
         return False
 
 
-def test_workflow_file_changes():
+def test_workflow_file_changes() -> bool:
     """Test that the workflow file has the expected changes"""
     print("🧪 Testing workflow file changes...")
 
@@ -151,7 +151,7 @@ def test_workflow_file_changes():
     return all_passed
 
 
-def main():
+def main() -> bool:
     """Run all tests"""
     print("🔧 Testing OpenHands Resolver Installation Fix")
     print("=" * 50)

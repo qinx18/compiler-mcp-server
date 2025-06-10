@@ -211,18 +211,16 @@ class CompilerMCPServer:
 
         try:
             # Compile with verbose vectorization reporting
-            cmd = (
-                [self.compiler_path]
-                + self.base_flags
-                + [
-                    "-fopt-info-vec-missed",  # Report why vectorization failed
-                    "-fopt-info-loop-all",  # Report all loop optimizations
-                    "-S",  # Generate assembly (don't link)
-                    "-o",
-                    "-",  # Output to stdout
-                    temp_file,
-                ]
-            )
+            cmd = [
+                self.compiler_path,
+                *self.base_flags,
+                "-fopt-info-vec-missed",  # Report why vectorization failed
+                "-fopt-info-loop-all",  # Report all loop optimizations
+                "-S",  # Generate assembly (don't link)
+                "-o",
+                "-",  # Output to stdout
+                temp_file,
+            ]
 
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
@@ -283,8 +281,6 @@ class CompilerMCPServer:
 
     def _parse_vectorization_messages(self, messages: List[str]) -> List[str]:
         """Parse and filter vectorization-specific messages from compiler output"""
-        vectorization_messages = []
-
         # Keywords that indicate vectorization-related messages
         vectorization_keywords = [
             "vectoriz",
@@ -297,11 +293,11 @@ class CompilerMCPServer:
             "parallel",
         ]
 
-        for msg in messages:
-            if any(keyword in msg.lower() for keyword in vectorization_keywords):
-                vectorization_messages.append(msg)
-
-        return vectorization_messages
+        return [
+            msg
+            for msg in messages
+            if any(keyword in msg.lower() for keyword in vectorization_keywords)
+        ]
 
     async def _generate_suggestions(
         self,
@@ -320,7 +316,10 @@ class CompilerMCPServer:
         for dep in dependencies:
             if dep.has_conflict():
                 # For s1113-like patterns where indices overlap
-                if "overlap" in dep.conflict_description.lower():
+                if (
+                    dep.conflict_description
+                    and "overlap" in dep.conflict_description.lower()
+                ):
                     suggestions.append(
                         {
                             "type": "loop_splitting",
@@ -484,7 +483,7 @@ class DependencyAnalyzer:
         accesses = self._extract_array_accesses(code)
 
         # Group accesses by array name
-        array_groups = {}
+        array_groups: Dict[str, List[ArrayAccess]] = {}
         for access in accesses:
             if access.array_name not in array_groups:
                 array_groups[access.array_name] = []
@@ -637,10 +636,9 @@ class DependencyAnalyzer:
                 return True
 
         # Check for offset patterns like i+1, i-1
-        if re.match(r"i\s*[+-]\s*\d+", idx1) or re.match(r"i\s*[+-]\s*\d+", idx2):
-            return True
-
-        return False
+        return bool(
+            re.match(r"i\s*[+-]\s*\d+", idx1) or re.match(r"i\s*[+-]\s*\d+", idx2)
+        )
 
     def _calculate_overlap_point(self, write_idx: str, read_idx: str) -> int:
         """
@@ -657,7 +655,7 @@ class DependencyAnalyzer:
 
 
 # Register MCP tools
-@mcp.tool()
+@mcp.tool()  # type: ignore[misc]
 async def analyze_vectorization_failure(
     code: str, session_id: Optional[str] = None
 ) -> str:
@@ -707,7 +705,7 @@ async def analyze_vectorization_failure(
     return response
 
 
-@mcp.tool()
+@mcp.tool()  # type: ignore[misc]
 async def create_compilation_session(session_name: str) -> str:
     """
     Create a stateful compilation session that remembers previous attempts.
@@ -740,7 +738,7 @@ if __name__ == "__main__":
 
     if args.mode == "test":
         # Test mode - run example analysis
-        async def test():
+        async def test() -> None:
             print("Testing compiler server with s1113-like code...")
             test_code = """
 for (int i = 0; i < LEN_1D; i++) {

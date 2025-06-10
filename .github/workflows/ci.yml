@@ -198,7 +198,7 @@ jobs:
         python -c "
         import solution_for_s1113
         print('✅ Package imports successfully')
-        
+
         # Test basic functionality
         server = solution_for_s1113.CompilerMCPServer()
         print('✅ Server instantiates successfully')

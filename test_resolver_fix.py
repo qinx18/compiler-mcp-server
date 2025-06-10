@@ -8,12 +8,13 @@ import os
 import subprocess
 import sys
 import tempfile
+from typing import Tuple
 
 
-def run_command(cmd, capture_output=True):
+def run_command(cmd: str, capture_output: bool = True) -> Tuple[bool, str, str]:
     """Run a command and return the result"""
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B602
             cmd,
             shell=True,
             capture_output=capture_output,
@@ -25,7 +26,7 @@ def run_command(cmd, capture_output=True):
         return False, "", str(e)
 
 
-def test_strategy_2_simulation():
+def test_strategy_2_simulation() -> bool:
     """Test the Strategy 2 logic that was fixed"""
     print("🧪 Testing Strategy 2 simulation...")
 
@@ -107,7 +108,7 @@ def test_strategy_2_simulation():
             return True
 
 
-def test_simple_resolver_fallback():
+def test_simple_resolver_fallback() -> bool:
     """Test that the simple resolver fallback works"""
     print("🧪 Testing simple resolver fallback...")
 
@@ -129,7 +130,7 @@ def test_simple_resolver_fallback():
         return False
 
 
-def main():
+def main() -> bool:
     """Run all tests"""
     print("🔧 Testing OpenHands Resolver Installation Fix")
     print("=" * 50)

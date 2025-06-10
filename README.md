@@ -5,7 +5,7 @@ An intelligent compiler MCP server focused on vectorization analysis for C/C++ c
 ## Features
 
 - Loop-carried dependency detection
-- Vectorization failure analysis  
+- Vectorization failure analysis
 - Optimization suggestions for C/C++ code
 - Stateful compilation sessions
 - MCP protocol compliance

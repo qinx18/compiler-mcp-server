@@ -40,7 +40,7 @@ class TestResolverInstallationVerification:
                     text=True,
                 )
                 command_available = result.returncode == 0
-            except:
+            except Exception:
                 command_available = False
 
             # Test Python import
@@ -52,7 +52,7 @@ class TestResolverInstallationVerification:
                     text=True,
                 )
                 import_available = result.returncode == 0
-            except:
+            except Exception:
                 import_available = False
 
             # Strategy 2 verification logic: succeeds if EITHER works
@@ -84,12 +84,12 @@ class TestResolverInstallationVerification:
         # This happens because the workflow logic has a bug
 
         # For this test, we expect both to fail (reproducing the real issue)
-        assert not verification_result["command_available"], (
-            "openhands-resolver command should not be available"
-        )
-        assert not verification_result["import_available"], (
-            "openhands_resolver import should not work"
-        )
+        assert not verification_result[
+            "command_available"
+        ], "openhands-resolver command should not be available"
+        assert not verification_result[
+            "import_available"
+        ], "openhands_resolver import should not work"
 
         # But Strategy 2 verification logic is flawed and might still claim success
         # The bug is in the OR condition - it should require BOTH to work for standard resolver
@@ -105,12 +105,12 @@ class TestResolverInstallationVerification:
         )
 
         # This should demonstrate the bug: resolver_type is "standard" but selection fails
-        assert resolver_type == "standard", (
-            "Strategy 2 incorrectly sets RESOLVER_TYPE=standard"
-        )
-        assert selected_resolver == "fallback to simple resolver", (
-            "Resolver selection should fall back due to verification mismatch"
-        )
+        assert (
+            resolver_type == "standard"
+        ), "Strategy 2 incorrectly sets RESOLVER_TYPE=standard"
+        assert (
+            selected_resolver == "fallback to simple resolver"
+        ), "Resolver selection should fall back due to verification mismatch"
 
         # This test demonstrates the core issue:
         # 1. Strategy 2 claims success and sets RESOLVER_TYPE=standard
@@ -167,15 +167,15 @@ class TestResolverWorkflowLogic:
                 )
 
         # For the standard resolver to work properly, we need at least import:
-        assert not new_correct_verification(False, False), (
-            "Should fail when neither works"
-        )
-        assert not new_correct_verification(True, False), (
-            "Should fail when only command works"
-        )
-        assert new_correct_verification(False, True), (
-            "Should succeed when import works (command optional)"
-        )
+        assert not new_correct_verification(
+            False, False
+        ), "Should fail when neither works"
+        assert not new_correct_verification(
+            True, False
+        ), "Should fail when only command works"
+        assert new_correct_verification(
+            False, True
+        ), "Should succeed when import works (command optional)"
         assert new_correct_verification(True, True), "Should succeed when both work"
 
         # Demonstrate the fix: old logic was too permissive for command-only case
@@ -183,9 +183,9 @@ class TestResolverWorkflowLogic:
             True, False
         ), "Fix: command-only should not succeed"
         # But import-only should work with new logic (this is the key insight)
-        assert new_correct_verification(False, True), (
-            "Import-only should succeed with new logic"
-        )
+        assert new_correct_verification(
+            False, True
+        ), "Import-only should succeed with new logic"
 
 
 class TestResolverSelectionLogic:
@@ -224,9 +224,9 @@ class TestResolverSelectionLogic:
         )
 
         # This should fall back to simple resolver
-        assert result == "fallback_simple", (
-            "Should fall back when standard resolver interfaces don't work"
-        )
+        assert (
+            result == "fallback_simple"
+        ), "Should fall back when standard resolver interfaces don't work"
 
         # Test that it works correctly when interfaces actually work
         assert (
@@ -291,9 +291,9 @@ class TestResolverWorkflowFix:
             result = fixed_strategy2_verification(command_works, import_works)
 
             assert result["success"] == expected_success, f"Failed for {description}"
-            assert result["resolver_type"] == expected_type, (
-                f"Wrong resolver type for {description}"
-            )
+            assert (
+                result["resolver_type"] == expected_type
+            ), f"Wrong resolver type for {description}"
 
             print(
                 f"✅ {description}: success={result['success']}, type={result['resolver_type']}"
@@ -340,29 +340,29 @@ class TestResolverWorkflowFix:
         )
 
         # After the fix, this should be consistent
-        assert result["resolver_type"] == "simple", (
-            "Should use simple resolver when standard doesn't work"
-        )
-        assert result["selected_resolver"] == "simple resolver", (
-            "Should select simple resolver"
-        )
-        assert not result["strategy2_success"], (
-            "Strategy 2 should fail when verification fails"
-        )
+        assert (
+            result["resolver_type"] == "simple"
+        ), "Should use simple resolver when standard doesn't work"
+        assert (
+            result["selected_resolver"] == "simple resolver"
+        ), "Should select simple resolver"
+        assert not result[
+            "strategy2_success"
+        ], "Strategy 2 should fail when verification fails"
 
         # Test successful scenario
         result_success = simulate_full_workflow_after_fix(
             command_works=True, import_works=True
         )
-        assert result_success["resolver_type"] == "standard", (
-            "Should use standard when both work"
-        )
-        assert result_success["selected_resolver"] == "openhands-resolver command", (
-            "Should select command"
-        )
-        assert result_success["strategy2_success"], (
-            "Strategy 2 should succeed when verification passes"
-        )
+        assert (
+            result_success["resolver_type"] == "standard"
+        ), "Should use standard when both work"
+        assert (
+            result_success["selected_resolver"] == "openhands-resolver command"
+        ), "Should select command"
+        assert result_success[
+            "strategy2_success"
+        ], "Strategy 2 should succeed when verification passes"
 
         print("✅ Resolver type consistency verified after fix!")
 
@@ -388,12 +388,7 @@ class TestResolverWorkflowFailures:
                 # Current logic: if command OR import works
                 verification_passes = command_works or import_works
 
-                if verification_passes:
-                    return True  # Claims success
-                else:
-                    # This is where the bug might be - maybe it still claims success
-                    # due to some other condition or environment variable persistence
-                    return False
+                return verification_passes
             return False
 
         # This should fail but might not due to the bug
@@ -429,12 +424,12 @@ class TestResolverWorkflowFailures:
         )
 
         # This demonstrates the inconsistency
-        assert resolver_type != correct_type, (
-            f"RESOLVER_TYPE='{resolver_type}' but should be '{correct_type}'"
-        )
-        assert correct_type == "simple", (
-            "Should use simple resolver when standard doesn't work"
-        )
+        assert (
+            resolver_type != correct_type
+        ), f"RESOLVER_TYPE='{resolver_type}' but should be '{correct_type}'"
+        assert (
+            correct_type == "simple"
+        ), "Should use simple resolver when standard doesn't work"
 
 
 class TestGitHubIssueReproduction:
@@ -497,9 +492,9 @@ class TestGitHubIssueReproduction:
         selected_resolver = resolver_selection_logic()
 
         # 5. This demonstrates the exact issue from GitHub
-        assert selected_resolver == "fallback to simple resolver", (
-            "System falls back despite RESOLVER_TYPE=standard"
-        )
+        assert (
+            selected_resolver == "fallback to simple resolver"
+        ), "System falls back despite RESOLVER_TYPE=standard"
 
         print(
             "🐛 ISSUE REPRODUCED: Strategy 2 claims success but resolver selection fails!"
@@ -546,9 +541,9 @@ class TestGitHubIssueReproduction:
 
         # The issue: pip install succeeds but verification should fail
         assert not result["success"], "Strategy 2 should fail when verification fails"
-        assert result["resolver_type"] is None, (
-            "RESOLVER_TYPE should not be set when verification fails"
-        )
+        assert (
+            result["resolver_type"] is None
+        ), "RESOLVER_TYPE should not be set when verification fails"
 
         # But in the real GitHub issue, somehow RESOLVER_TYPE=standard gets set
         # This suggests there's a bug in the workflow logic or environment variable handling
@@ -595,7 +590,7 @@ class TestGitHubIssue6ResolverSelectionBug:
                     text=True,
                 )
                 return result.returncode == 0
-            except:
+            except Exception:
                 return False
 
         # 2. Resolver selection logic (from workflow lines 275-284)
@@ -610,7 +605,7 @@ class TestGitHubIssue6ResolverSelectionBug:
                     text=True,
                 )
                 module_import_works = result1.returncode == 0
-            except:
+            except Exception:
                 module_import_works = False
 
             # Test 2: python -c "from openhands_resolver import resolve_issue"
@@ -625,7 +620,7 @@ class TestGitHubIssue6ResolverSelectionBug:
                     text=True,
                 )
                 direct_import_works = result2.returncode == 0
-            except:
+            except Exception:
                 direct_import_works = False
 
             return module_import_works, direct_import_works
@@ -659,7 +654,7 @@ class TestGitHubIssue6ResolverSelectionBug:
             print(
                 "   This would cause Strategy 2 to claim success but resolver selection to fail"
             )
-            assert False, (
+            raise AssertionError(
                 "Import path mismatch detected - this is the GitHub Issue #6 bug!"
             )
         elif not verification_passes and not (
@@ -766,12 +761,12 @@ class TestGitHubIssue6ResolverSelectionBug:
             print(f"   Selected resolver: {selected_resolver}")
 
             # 6. This demonstrates the bug!
-            assert resolver_type == "standard", (
-                "Strategy 2 should set RESOLVER_TYPE=standard"
-            )
-            assert selected_resolver == "fallback to simple resolver", (
-                "Should fall back due to import path mismatch"
-            )
+            assert (
+                resolver_type == "standard"
+            ), "Strategy 2 should set RESOLVER_TYPE=standard"
+            assert (
+                selected_resolver == "fallback to simple resolver"
+            ), "Should fall back due to import path mismatch"
 
             print("   🐛 SUCCESSFULLY REPRODUCED GitHub Issue #6!")
             print(
@@ -888,9 +883,9 @@ class TestGitHubIssue6ResolverSelectionBug:
             # After the fix, these should be consistent
             resolver_selection_works = module_import_works or direct_import_works
 
-            assert fixed_verification_passes == resolver_selection_works, (
-                "Fixed verification should match resolver selection results"
-            )
+            assert (
+                fixed_verification_passes == resolver_selection_works
+            ), "Fixed verification should match resolver selection results"
 
             if fixed_verification_passes and resolver_selection_works:
                 print(
@@ -1042,12 +1037,12 @@ class TestGitHubIssue6ResolverSelectionBug:
             )
 
             # Verify the fix works
-            assert old_verification_result != resolver_selection_result, (
-                "Should demonstrate the original bug"
-            )
-            assert new_verification_result == resolver_selection_result, (
-                "Fix should make them consistent"
-            )
+            assert (
+                old_verification_result != resolver_selection_result
+            ), "Should demonstrate the original bug"
+            assert (
+                new_verification_result == resolver_selection_result
+            ), "Fix should make them consistent"
 
             print("   ✅ FIX VERIFIED: New verification logic eliminates the mismatch!")
             print(
@@ -1128,9 +1123,9 @@ class TestGitHubIssue6ResolverSelectionBug:
                 # This assertion should FAIL because of the bug
                 # The bug causes Strategy 2 to pass but resolver selection to fail
                 try:
-                    assert module_import_works or direct_import_works, (
-                        "If Strategy 2 verification passes, resolver selection should also work (but it doesn't due to import path mismatch bug)"
-                    )
+                    assert (
+                        module_import_works or direct_import_works
+                    ), "If Strategy 2 verification passes, resolver selection should also work (but it doesn't due to import path mismatch bug)"
                     print(
                         "   ✅ No bug detected - Strategy 2 verification and resolver selection are consistent"
                     )

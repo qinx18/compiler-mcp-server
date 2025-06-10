@@ -17,7 +17,11 @@ class TestMCPConnection:
     def test_server_imports_correctly(self):
         """Test that all required modules import without errors"""
         try:
-            from fastmcp import FastMCP
+            import importlib.util
+
+            # Test FastMCP availability
+            if importlib.util.find_spec("fastmcp") is not None:
+                from fastmcp import FastMCP  # noqa: F401
 
             from solution_for_s1113 import mcp
 

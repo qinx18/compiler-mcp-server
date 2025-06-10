@@ -67,6 +67,14 @@ htmlcov/
 .pytest_cache/
 .tox/
 
+# GitHub Actions test output files
+*_Tests*.txt
+*_Code Quality*.txt
+*_Pre-commit*.txt
+Tests*/
+Code Quality*/
+Pre-commit*/
+
 # Type checking
 .mypy_cache/
 .dmypy.json

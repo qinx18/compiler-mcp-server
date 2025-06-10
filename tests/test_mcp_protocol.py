@@ -336,9 +336,9 @@ class TestMCPIntegration:
 
             # Check that expected keywords appear in the analysis
             for keyword in test_case["expected_keywords"]:
-                assert keyword in result, (
-                    f"Expected '{keyword}' in analysis for {test_case['name']}"
-                )
+                assert (
+                    keyword in result
+                ), f"Expected '{keyword}' in analysis for {test_case['name']}"
 
             # Additional checks for specific patterns
             if test_case["name"] == "loop_carried_dependency":
@@ -399,8 +399,9 @@ class TestMCPErrorHandling:
                 assert isinstance(result, str)
                 # Should indicate some kind of issue
                 assert len(result) > 0
-            except Exception as e:
+            except Exception as e:  # noqa: PERF203
                 # If it raises an exception, it should be handled gracefully
+                # Note: try-except in loop is intentional for testing error handling
                 assert isinstance(e, (ValueError, SyntaxError, RuntimeError))
 
 
@@ -472,7 +473,7 @@ class TestClaudeDesktopConfiguration:
             assert "mcpServers" in parsed
             assert isinstance(parsed["mcpServers"], dict)
 
-            for server_name, server_config in parsed["mcpServers"].items():
+            for server_config in parsed["mcpServers"].values():
                 assert "command" in server_config
                 assert "args" in server_config
                 assert isinstance(server_config["args"], list)

@@ -10,9 +10,10 @@ import argparse
 import subprocess
 import sys
 from pathlib import Path
+from typing import List
 
 
-def run_command(cmd, description=""):
+def run_command(cmd: List[str], description: str = "") -> bool:
     """Run a command and return success status"""
     print(f"\n{'=' * 60}")
     if description:
@@ -32,7 +33,7 @@ def run_command(cmd, description=""):
         return False
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="Run MCP protocol tests")
     parser.add_argument(
         "--suite",
@@ -66,23 +67,23 @@ def main():
     test_suites = {
         "basic": {
             "description": "Basic MCP server functionality tests",
-            "cmd": base_cmd + ["tests/test_mcp_connection.py"],
+            "cmd": [*base_cmd, "tests/test_mcp_connection.py"],
         },
         "protocol": {
             "description": "MCP protocol compliance tests",
-            "cmd": base_cmd + ["tests/test_mcp_protocol.py", "-m", "not integration"],
+            "cmd": [*base_cmd, "tests/test_mcp_protocol.py", "-m", "not integration"],
         },
         "integration": {
             "description": "Real MCP communication integration tests",
-            "cmd": base_cmd + ["tests/test_mcp_real_communication.py"],
+            "cmd": [*base_cmd, "tests/test_mcp_real_communication.py"],
         },
         "performance": {
             "description": "Performance and load tests",
-            "cmd": base_cmd + ["-m", "performance"],
+            "cmd": [*base_cmd, "-m", "performance"],
         },
         "claude": {
             "description": "Claude Desktop specific tests",
-            "cmd": base_cmd + ["-m", "claude_desktop"],
+            "cmd": [*base_cmd, "-m", "claude_desktop"],
         },
     }
 
@@ -109,7 +110,7 @@ def main():
         suite = test_suites[suite_name]
         total_count += 1
 
-        if run_command(suite["cmd"], suite["description"]):
+        if run_command(list(suite["cmd"]), str(suite["description"])):
             success_count += 1
 
     # Summary

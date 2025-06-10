@@ -31,13 +31,13 @@ if pip install --no-deps openhands-resolver; then
 if pip install openhands-resolver; then
   # Comprehensive verification checks all resolver interfaces
   RESOLVER_INTERFACES_AVAILABLE=false
-  
+
   # Check command line interface
   if command -v openhands-resolver >/dev/null 2>&1; then
     echo "✅ Command line interface available"
     RESOLVER_INTERFACES_AVAILABLE=true
   fi
-  
+
   # Check Python module interfaces (used by resolver selection logic)
   if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
     echo "✅ Module import interface available"
@@ -46,7 +46,7 @@ if pip install openhands-resolver; then
     echo "✅ Direct import interface available"
     RESOLVER_INTERFACES_AVAILABLE=true
   fi
-  
+
   # If any interface works, consider it a success
   if [ "$RESOLVER_INTERFACES_AVAILABLE" = true ]; then
     echo "✅ Strategy 2 succeeded and verified (at least one resolver interface works)"
@@ -58,7 +58,7 @@ if pip install openhands-resolver; then
   fi
 ```
 
-**Solution**: 
+**Solution**:
 1. Strategy 2 now tries to install `openhands-resolver` with all dependencies instead of using `--no-deps`
 2. The verification logic comprehensively checks all resolver interfaces that the resolver selection logic actually uses
 3. Only claims success if at least one working interface is available
