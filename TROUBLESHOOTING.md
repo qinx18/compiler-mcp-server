@@ -15,10 +15,27 @@
 
 **Problem**: Workflow fails with authentication or API errors.
 
-**Required Secrets** (set in repository Settings > Secrets and variables > Actions):
-- `PAT_TOKEN`: GitHub Personal Access Token with repo permissions
+**Step-by-step setup:**
+
+1. **Create GitHub Personal Access Token:**
+   - Go to [GitHub Settings > Personal access tokens](https://github.com/settings/tokens)
+   - Click "Generate new token (classic)"
+   - Select scopes: `repo`, `workflow`, `write:packages`
+   - Copy the generated token
+
+2. **Get LLM API Key:**
+   - For Claude: [Anthropic Console](https://console.anthropic.com/)
+   - For OpenAI: [OpenAI Platform](https://platform.openai.com/api-keys)
+   - For other providers: Check their documentation
+
+3. **Add secrets to repository:**
+   - Go to your repository Settings > Secrets and variables > Actions
+   - Click "New repository secret" for each:
+
+**Required Secrets:**
+- `PAT_TOKEN`: Your GitHub Personal Access Token (from step 1)
 - `PAT_USERNAME`: Your GitHub username (optional, defaults to github.actor)
-- `LLM_API_KEY`: API key for your LLM service (Claude, OpenAI, etc.)
+- `LLM_API_KEY`: Your LLM service API key (from step 2)
 - `LLM_MODEL`: Model name (e.g., `anthropic/claude-3-5-sonnet-20241022`)
 - `LLM_BASE_URL`: Base URL for LLM API (optional, for proxies)
 
@@ -34,10 +51,31 @@
 
 **Problem**: The openhands-resolver package has dependency conflicts with e2b package versions.
 
-**Current Status**: This is a known issue with the openhands-resolver package. The workflow includes:
-- Multiple installation strategies
+**Current Status**: This is a known issue with the openhands-resolver package. The workflow now includes:
+- Multiple installation strategies with specific version combinations
+- Virtual environment isolation to avoid conflicts
 - Graceful fallback to error reporting
 - Clear error messages for debugging
+
+**What the workflow tries:**
+1. Install specific working version combinations (`openhands-resolver==0.3.1` with `openhands-ai==0.13.1`)
+2. Fall back to older stable version (`openhands-resolver==0.2.9`)
+3. Create isolated virtual environment if needed
+4. Provide detailed error reporting if all strategies fail
+
+**Manual workaround:**
+If the automated installation continues to fail, you can try:
+```bash
+# Create isolated environment
+python -m venv openhands_env
+source openhands_env/bin/activate  # On Windows: openhands_env\Scripts\activate
+
+# Install specific versions
+pip install openhands-resolver==0.2.9
+
+# Run manually
+python -m openhands_resolver.resolve_issue --repo owner/repo --issue-number 123
+```
 
 ### 5. Testing the Workflow
 

@@ -32,20 +32,31 @@ jobs:
 
       - name: Install OpenHands Resolver (with fallback)
         run: |
-          # Try multiple installation strategies
+          # Try multiple installation strategies to handle dependency conflicts
           pip install --upgrade pip setuptools wheel
           
-          # Strategy 1: Try latest version
-          if ! pip install openhands-resolver; then
-            echo "Latest version failed, trying with --no-deps"
-            # Strategy 2: Install without dependencies and manually install what we need
-            pip install --no-deps openhands-resolver
-            pip install pandas pytest
-            # Try to install a compatible openhands-ai version
-            pip install "openhands-ai>=0.13.0" || echo "Could not install openhands-ai, continuing..."
+          # Strategy 1: Try with specific working versions to avoid conflicts
+          echo "Trying specific version combination..."
+          if pip install "openhands-resolver==0.3.1" "openhands-ai==0.13.1" --force-reinstall; then
+            echo "✅ Installed with specific versions"
+          elif pip install "openhands-resolver==0.2.9" --force-reinstall; then
+            echo "✅ Installed older version"
+          else
+            echo "❌ Standard installation failed, trying alternative approach..."
+            # Strategy 2: Install in isolated environment
+            python -m venv resolver_venv
+            source resolver_venv/bin/activate
+            pip install --upgrade pip
+            if pip install openhands-resolver; then
+              echo "✅ Installed in virtual environment"
+              echo "RESOLVER_VENV=resolver_venv" >> $GITHUB_ENV
+            else
+              echo "❌ All installation strategies failed"
+              echo "RESOLVER_FAILED=true" >> $GITHUB_ENV
+            fi
           fi
 
-      - name: Run OpenHands Resolver
+      - name: Check secrets and run resolver
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.PAT_USERNAME || github.actor }}
@@ -53,17 +64,50 @@ jobs:
           LLM_MODEL: ${{ secrets.LLM_MODEL || 'anthropic/claude-3-5-sonnet-20241022' }}
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
         run: |
-          # Try to run the resolver, with fallback to manual issue handling
-          if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
-            python -m openhands_resolver.resolve_issue \
-              --issue-number ${{ github.event.issue.number }} \
-              --repo ${{ github.repository }}
-          else
-            echo "OpenHands resolver not available, adding comment to issue"
-            # Fallback: Add a comment explaining the issue
+          # Check if required secrets are available
+          if [ -z "$LLM_API_KEY" ]; then
+            echo "❌ LLM_API_KEY secret is not set"
+            MISSING_SECRETS="true"
+          fi
+          
+          if [ -z "${{ secrets.PAT_TOKEN }}" ] && [ -z "$GITHUB_TOKEN" ]; then
+            echo "❌ Neither PAT_TOKEN nor GITHUB_TOKEN is available"
+            MISSING_SECRETS="true"
+          fi
+          
+          # Try to run the resolver if installation succeeded and secrets are available
+          if [ "$RESOLVER_FAILED" = "true" ]; then
+            echo "❌ Resolver installation failed, posting error comment"
             curl -X POST \
               -H "Authorization: token $GITHUB_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
               https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
-              -d '{"body":"⚠️ OpenHands resolver encountered dependency conflicts and could not run. Please check the workflow configuration and ensure all required secrets are set up correctly.\n\nRequired secrets:\n- PAT_TOKEN: GitHub Personal Access Token\n- LLM_API_KEY: API key for your LLM service\n- LLM_MODEL: Model name (e.g., anthropic/claude-3-5-sonnet-20241022)\n\nSee the README for setup instructions."}'
+              -d '{"body":"❌ **OpenHands Resolver Installation Failed**\n\nThe resolver encountered dependency conflicts during installation. This is a known issue with the current version.\n\n**Possible solutions:**\n1. Check if newer versions are available\n2. Set up the required secrets (see below)\n3. Try manual resolution using the instructions in the README\n\n**Required secrets** (in repository Settings > Secrets):\n- `PAT_TOKEN`: GitHub Personal Access Token with repo permissions\n- `LLM_API_KEY`: API key for your LLM service (Claude, OpenAI, etc.)\n- `LLM_MODEL`: Model name (e.g., `anthropic/claude-3-5-sonnet-20241022`)\n\nSee [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed setup instructions."}'
+          elif [ "$MISSING_SECRETS" = "true" ]; then
+            echo "❌ Required secrets missing, posting setup instructions"
+            curl -X POST \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+              -d '{"body":"⚙️ **OpenHands Resolver Setup Required**\n\nThe resolver is installed but missing required secrets.\n\n**To enable automatic issue resolution:**\n\n1. Go to repository **Settings > Secrets and variables > Actions**\n2. Add these secrets:\n   - `PAT_TOKEN`: [Create a Personal Access Token](https://github.com/settings/tokens) with repo permissions\n   - `LLM_API_KEY`: API key from [Claude](https://console.anthropic.com/) or [OpenAI](https://platform.openai.com/api-keys)\n   - `LLM_MODEL`: Model name (e.g., `anthropic/claude-3-5-sonnet-20241022`)\n\n3. **Enable workflow permissions:**\n   - Go to Settings > Actions > General > Workflow permissions\n   - Select \"Read and write permissions\"\n   - Enable \"Allow GitHub Actions to create and approve pull requests\"\n\nOnce configured, add the `fix-me` label to any issue for automatic resolution!"}'
+          else
+            echo "✅ Attempting to run OpenHands resolver..."
+            # Activate virtual environment if it was created
+            if [ "$RESOLVER_VENV" = "resolver_venv" ]; then
+              source resolver_venv/bin/activate
+            fi
+            
+            if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
+              echo "✅ Running resolver for issue ${{ github.event.issue.number }}"
+              python -m openhands_resolver.resolve_issue \
+                --issue-number ${{ github.event.issue.number }} \
+                --repo ${{ github.repository }}
+            else
+              echo "❌ Resolver import failed, posting error"
+              curl -X POST \
+                -H "Authorization: token $GITHUB_TOKEN" \
+                -H "Accept: application/vnd.github.v3+json" \
+                https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+                -d '{"body":"❌ **OpenHands Resolver Import Error**\n\nThe resolver was installed but cannot be imported. This may be due to missing dependencies.\n\nPlease check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for detailed error information.\n\nFor manual resolution, see the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) guide."}'
+            fi
           fi
