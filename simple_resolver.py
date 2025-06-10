@@ -25,6 +25,9 @@ def call_llm(prompt: str, api_key: str, model: str, base_url: Optional[str] = No
         print(f"🔍 Debug: Calling LLM with model='{model}', base_url='{base_url}'")
         print(f"🔍 Debug: API key starts with: {api_key[:10]}..." if api_key else "🔍 Debug: No API key provided")
         
+        if not base_url or not base_url.strip():
+            print("🔍 Debug: Empty base_url detected, will use default API endpoint")
+        
         # Normalize model name
         clean_model = model.replace("openai/", "").replace("anthropic/", "")
         
@@ -44,7 +47,11 @@ def call_llm(prompt: str, api_key: str, model: str, base_url: Optional[str] = No
             # OpenAI API (default)
             print(f"🤖 Using OpenAI API with model: {clean_model}")
             import openai
-            client = openai.OpenAI(api_key=api_key, base_url=base_url)
+            # Only pass base_url if it's not empty
+            if base_url and base_url.strip():
+                client = openai.OpenAI(api_key=api_key, base_url=base_url)
+            else:
+                client = openai.OpenAI(api_key=api_key)
             response = client.chat.completions.create(
                 model=clean_model,
                 messages=[{"role": "user", "content": prompt}],
@@ -56,7 +63,11 @@ def call_llm(prompt: str, api_key: str, model: str, base_url: Optional[str] = No
             # Anthropic API
             print(f"🤖 Using Anthropic API with model: {clean_model}")
             import anthropic
-            client = anthropic.Anthropic(api_key=api_key, base_url=base_url)
+            # Only pass base_url if it's not empty
+            if base_url and base_url.strip():
+                client = anthropic.Anthropic(api_key=api_key, base_url=base_url)
+            else:
+                client = anthropic.Anthropic(api_key=api_key)
             response = client.messages.create(
                 model=clean_model,
                 max_tokens=4000,
