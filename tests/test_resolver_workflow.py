@@ -127,9 +127,9 @@ class TestResolverWorkflowLogic:
         def old_flawed_verification(command_available, import_available):
             return command_available or import_available
         
-        # New correct logic: command_available AND import_available (for standard resolver)
+        # New correct logic: import_available is required, command_available is nice to have
         def new_correct_verification(command_available, import_available):
-            return command_available and import_available
+            return import_available  # Command is optional, import is required
         
         # Test scenarios
         test_cases = [
@@ -151,15 +151,16 @@ class TestResolverWorkflowLogic:
             if old_result and not new_result:
                 print(f"  🔧 FIXED: Old logic incorrectly claimed success, new logic correctly fails!")
         
-        # For the standard resolver to work properly, we need BOTH:
+        # For the standard resolver to work properly, we need at least import:
         assert not new_correct_verification(False, False), "Should fail when neither works"
         assert not new_correct_verification(True, False), "Should fail when only command works"  
-        assert not new_correct_verification(False, True), "Should fail when only import works"
-        assert new_correct_verification(True, True), "Should succeed only when both work"
+        assert new_correct_verification(False, True), "Should succeed when import works (command optional)"
+        assert new_correct_verification(True, True), "Should succeed when both work"
         
-        # Demonstrate the fix: old logic was too permissive, new logic is correct
+        # Demonstrate the fix: old logic was too permissive for command-only case
         assert old_flawed_verification(True, False) != new_correct_verification(True, False), "Fix: command-only should not succeed"
-        assert old_flawed_verification(False, True) != new_correct_verification(False, True), "Fix: import-only should not succeed"
+        # But import-only should work with new logic (this is the key insight)
+        assert new_correct_verification(False, True), "Import-only should succeed with new logic"
 
 
 class TestResolverSelectionLogic:
@@ -214,13 +215,13 @@ class TestResolverWorkflowFix:
         both command AND import to work for standard resolver.
         """
         
-        # Simulate the fixed Strategy 2 logic (using AND instead of OR)
+        # Simulate the fixed Strategy 2 logic (import required, command optional)
         def fixed_strategy2_verification(command_works, import_works):
             pip_install_success = True  # Assume pip install succeeds
             
             if pip_install_success:
-                # Fixed logic: BOTH command AND import must work for standard resolver
-                verification_passes = command_works and import_works
+                # Fixed logic: Import is required, command is optional
+                verification_passes = import_works
                 
                 if verification_passes:
                     return {"success": True, "resolver_type": "standard"}
@@ -232,7 +233,7 @@ class TestResolverWorkflowFix:
         test_cases = [
             (False, False, False, None, "Neither works -> should fail"),
             (True, False, False, None, "Only command works -> should fail"),
-            (False, True, False, None, "Only import works -> should fail"),
+            (False, True, True, "standard", "Only import works -> should succeed"),
             (True, True, True, "standard", "Both work -> should succeed"),
         ]
         
@@ -252,7 +253,7 @@ class TestResolverWorkflowFix:
         
         def simulate_full_workflow_after_fix(command_works, import_works):
             # Strategy 2 with fixed verification
-            if command_works and import_works:  # Fixed: AND instead of OR
+            if import_works:  # Fixed: Import required, command optional
                 resolver_type = "standard"
                 strategy2_success = True
             else:

@@ -25,34 +25,40 @@ if command -v openhands-resolver >/dev/null 2>&1 || python -c "import openhands_
 
 ### After (Fixed Logic)
 ```bash
-# Line 82: Now uses AND logic
-if command -v openhands-resolver >/dev/null 2>&1 && python -c "import openhands_resolver" 2>/dev/null; then
-  echo "✅ Strategy 2 succeeded and verified (both command and import work)"
+# Line 83: Now requires import, command is optional
+if python -c "import openhands_resolver" 2>/dev/null; then
+  if command -v openhands-resolver >/dev/null 2>&1; then
+    echo "✅ Strategy 2 succeeded and verified (both command and import work)"
+  else
+    echo "✅ Strategy 2 succeeded and verified (import works, command not available)"
+  fi
   INSTALL_SUCCESS=true
   echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
 ```
 
-**Solution**: Strategy 2 now requires BOTH the command AND the import to work before claiming success and setting `RESOLVER_TYPE=standard`.
+**Solution**: Strategy 2 now requires the Python import to work (essential) but treats the command as optional (nice to have). This aligns with the resolver selection logic which can handle Python-only installations.
 
 ## Changes Made
 
 ### 1. Fixed Strategy 2 Verification Logic
-**File**: `.github/workflows/openhands-resolver.yml` (lines 81-88)
+**File**: `.github/workflows/openhands-resolver.yml` (lines 83-94)
 
-- **Changed**: `||` (OR) to `&&` (AND) in verification condition
-- **Added**: Clear messaging about requiring both command and import
-- **Result**: Strategy 2 only claims success when resolver is fully functional
+- **Changed**: `||` (OR) to import-required logic
+- **Key insight**: Import is essential, command is optional (resolver selection can handle Python-only)
+- **Added**: Clear messaging about what's required vs optional
+- **Result**: Strategy 2 only claims success when resolver can actually be used
 
 ### 2. Added Strategy 3 Verification Logic
-**File**: `.github/workflows/openhands-resolver.yml` (lines 96-109)
+**File**: `.github/workflows/openhands-resolver.yml` (lines 108-119)
 
 - **Added**: Complete verification logic to Strategy 3 (was missing before)
-- **Ensures**: Strategy 3 also requires both command and import to work
+- **Ensures**: Strategy 3 also requires import to work (command optional)
 - **Prevents**: Same issue from occurring in Strategy 3
 
 ### 3. Enhanced Error Messages
-- **Strategy 2**: "⚠️ Strategy 2 installed but verification failed (need both command and import), trying Strategy 3..."
-- **Strategy 3**: "⚠️ Strategy 3 installed but verification failed (need both command and import), trying Strategy 4..."
+- **Strategy 2**: "⚠️ Strategy 2 installed but verification failed (import required), trying Strategy 3..."
+- **Strategy 3**: "⚠️ Strategy 3 installed but verification failed (import required), trying Strategy 4..."
+- **Success messages**: Clearly indicate whether both command and import work, or just import
 
 ## Test Coverage
 
