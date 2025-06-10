@@ -67,12 +67,20 @@ jobs:
               "litellm>=1.0,<2.0" \
               "requests>=2.25.0" \
               "click>=8.0.0" \
-              "rich>=12.0.0"
+              "rich>=12.0.0" \
+              "pandas>=2.0.0" \
+              "typing-extensions>=4.0.0" \
+              "aiohttp>=3.8.0"
             
             if pip install --no-deps openhands-resolver; then
-              echo "✅ Strategy 2 succeeded"
-              INSTALL_SUCCESS=true
-              echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
+              # Verify the installation actually works
+              if command -v openhands-resolver >/dev/null 2>&1 || python -c "import openhands_resolver" 2>/dev/null; then
+                echo "✅ Strategy 2 succeeded and verified"
+                INSTALL_SUCCESS=true
+                echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
+              else
+                echo "⚠️ Strategy 2 installed but verification failed, trying Strategy 3..."
+              fi
             else
               echo "❌ Strategy 2 failed, trying Strategy 3..."
               
@@ -89,13 +97,15 @@ jobs:
                 echo "🔄 Strategy 4: Using alternative resolver approach..."
                 pip install requests openai anthropic litellm
                 
-                # Copy the simple resolver from the repository
-                cp simple_resolver.py ./simple_resolver_fallback.py || echo "⚠️ Could not copy simple resolver, creating basic version"
-                
-                chmod +x simple_resolver.py
-                echo "✅ Strategy 4 succeeded - created simple resolver"
-                INSTALL_SUCCESS=true
-                echo "RESOLVER_TYPE=simple" >> $GITHUB_ENV
+                # Ensure simple resolver is available and executable
+                if [ -f "simple_resolver.py" ]; then
+                  chmod +x simple_resolver.py
+                  echo "✅ Strategy 4 succeeded - using simple resolver"
+                  INSTALL_SUCCESS=true
+                  echo "RESOLVER_TYPE=simple" >> $GITHUB_ENV
+                else
+                  echo "❌ Strategy 4 failed - simple_resolver.py not found"
+                fi
               fi
             fi
           fi

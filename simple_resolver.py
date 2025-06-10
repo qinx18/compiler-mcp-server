@@ -127,7 +127,14 @@ def main():
     
     print(f"🔄 Resolving issue #{issue_number} in {repo}")
     
-    # Test network connectivity
+    # Test dependencies and network connectivity
+    print("🔍 Testing dependencies...")
+    try:
+        import openai
+        print("✅ OpenAI package is available")
+    except ImportError as e:
+        print(f"❌ OpenAI package not available: {e}")
+    
     print("🌐 Testing network connectivity...")
     try:
         test_response = requests.get("https://api.openai.com/v1/models", 
@@ -135,12 +142,19 @@ def main():
                                    timeout=10)
         if test_response.status_code == 200:
             print("✅ OpenAI API is reachable and API key is valid")
+            # Show available models
+            models = test_response.json().get('data', [])
+            gpt_models = [m['id'] for m in models if 'gpt' in m['id'].lower()][:5]
+            print(f"📋 Available GPT models: {', '.join(gpt_models)}")
         elif test_response.status_code == 401:
             print("❌ OpenAI API key is invalid or expired")
         else:
             print(f"⚠️ OpenAI API returned status {test_response.status_code}")
+            print(f"Response: {test_response.text[:200]}")
     except Exception as e:
         print(f"❌ Network connectivity test failed: {e}")
+        import traceback
+        print(f"Full error: {traceback.format_exc()}")
     
     # Get issue content
     issue = get_issue_content(repo, issue_number, github_token)
