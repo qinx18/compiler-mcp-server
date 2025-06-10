@@ -136,10 +136,19 @@ def main():
         print(f"❌ OpenAI package not available: {e}")
     
     print("🌐 Testing network connectivity...")
+    
+    # Test basic internet connectivity first
+    try:
+        basic_test = requests.get("https://httpbin.org/ip", timeout=5)
+        print(f"✅ Basic internet connectivity: {basic_test.status_code}")
+    except Exception as e:
+        print(f"❌ No basic internet connectivity: {e}")
+    
+    # Test OpenAI API connectivity
     try:
         test_response = requests.get("https://api.openai.com/v1/models", 
                                    headers={"Authorization": f"Bearer {llm_api_key}"}, 
-                                   timeout=10)
+                                   timeout=15)
         if test_response.status_code == 200:
             print("✅ OpenAI API is reachable and API key is valid")
             # Show available models
@@ -151,6 +160,11 @@ def main():
         else:
             print(f"⚠️ OpenAI API returned status {test_response.status_code}")
             print(f"Response: {test_response.text[:200]}")
+    except requests.exceptions.ConnectTimeout:
+        print("❌ Connection timeout to OpenAI API - GitHub Actions may have network restrictions")
+    except requests.exceptions.ConnectionError as e:
+        print(f"❌ Connection error to OpenAI API: {e}")
+        print("💡 This might be due to GitHub Actions network restrictions")
     except Exception as e:
         print(f"❌ Network connectivity test failed: {e}")
         import traceback

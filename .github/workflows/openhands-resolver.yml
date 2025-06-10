@@ -74,12 +74,17 @@ jobs:
             
             if pip install --no-deps openhands-resolver; then
               # Verify the installation actually works
+              echo "🔍 Verifying Strategy 2 installation..."
+              echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"
+              echo "  Import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
+              
               if command -v openhands-resolver >/dev/null 2>&1 || python -c "import openhands_resolver" 2>/dev/null; then
                 echo "✅ Strategy 2 succeeded and verified"
                 INSTALL_SUCCESS=true
                 echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
               else
                 echo "⚠️ Strategy 2 installed but verification failed, trying Strategy 3..."
+                # Don't set RESOLVER_TYPE here - let it fall through to other strategies
               fi
             else
               echo "❌ Strategy 2 failed, trying Strategy 3..."
