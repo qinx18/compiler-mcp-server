@@ -3,7 +3,7 @@
     "compiler": {
       "command": "python",
       "args": [
-        "/home/qinxiao/server_deployments/compiler-mcp-server/solution_for_s1113.py"
+        "/workspace/compiler-mcp-server/solution_for_s1113.py"
       ]
     }
   }
