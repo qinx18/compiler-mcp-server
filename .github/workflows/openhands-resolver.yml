@@ -56,6 +56,7 @@ jobs:
           if pip install --upgrade --force-reinstall openhands-resolver; then
             echo "✅ Strategy 1 succeeded"
             INSTALL_SUCCESS=true
+            echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
           else
             echo "❌ Strategy 1 failed, trying Strategy 2..."
             
@@ -71,6 +72,7 @@ jobs:
             if pip install --no-deps openhands-resolver; then
               echo "✅ Strategy 2 succeeded"
               INSTALL_SUCCESS=true
+              echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
             else
               echo "❌ Strategy 2 failed, trying Strategy 3..."
               
@@ -79,6 +81,7 @@ jobs:
               if pip install git+https://github.com/All-Hands-AI/OpenHands.git#subdirectory=openhands/resolver; then
                 echo "✅ Strategy 3 succeeded"
                 INSTALL_SUCCESS=true
+                echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
               else
                 echo "❌ Strategy 3 failed, trying Strategy 4..."
                 
@@ -217,23 +220,26 @@ jobs:
               elif [ "$RESOLVER_TYPE" = "simple" ] && [ -f "simple_resolver_fallback.py" ]; then
                 echo "🔄 Using simple resolver fallback..."
                 python simple_resolver_fallback.py
-              elif command -v openhands-resolver >/dev/null 2>&1; then
+              elif [ "$RESOLVER_TYPE" = "standard" ] && command -v openhands-resolver >/dev/null 2>&1; then
                 echo "🔄 Using openhands-resolver command..."
                 openhands-resolver \
                   --issue-number "$ISSUE_NUMBER" \
                   --repo "$REPO_NAME" \
                   --llm-model "$LLM_MODEL" \
                   --llm-api-key "$LLM_API_KEY"
-              elif python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
+              elif [ "$RESOLVER_TYPE" = "standard" ] && python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
                 echo "🔄 Using Python module..."
                 python -m openhands_resolver.resolve_issue \
                   --issue-number "$ISSUE_NUMBER" \
                   --repo "$REPO_NAME" \
                   --llm-model "$LLM_MODEL" \
                   --llm-api-key "$LLM_API_KEY"
-              elif python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
+              elif [ "$RESOLVER_TYPE" = "standard" ] && python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
                 echo "🔄 Using direct import..."
                 python -c "from openhands_resolver import resolve_issue; resolve_issue.main(issue_number='$ISSUE_NUMBER', repo='$REPO_NAME', llm_model='$LLM_MODEL', llm_api_key='$LLM_API_KEY')"
+              elif [ -f "simple_resolver.py" ]; then
+                echo "🔄 Fallback: Using simple resolver (no type specified)..."
+                python simple_resolver.py
               else
                 echo "❌ No working resolver interface found"
                 IMPORT_ERROR="❌ **OpenHands Resolver Interface Error**\\n\\n"
@@ -243,6 +249,9 @@ jobs:
                 IMPORT_ERROR="${IMPORT_ERROR}- Import status: $RESOLVER_IMPORT\\n"
                 IMPORT_ERROR="${IMPORT_ERROR}- Resolver type: $RESOLVER_TYPE\\n"
                 IMPORT_ERROR="${IMPORT_ERROR}- Virtual env: $RESOLVER_VENV\\n\\n"
+                IMPORT_ERROR="${IMPORT_ERROR}**Available files:**\\n"
+                IMPORT_ERROR="${IMPORT_ERROR}- simple_resolver.py: $([ -f 'simple_resolver.py' ] && echo 'exists' || echo 'missing')\\n"
+                IMPORT_ERROR="${IMPORT_ERROR}- openhands-resolver command: $(command -v openhands-resolver >/dev/null && echo 'available' || echo 'not found')\\n\\n"
                 IMPORT_ERROR="${IMPORT_ERROR}Please check the [workflow logs]"
                 WORKFLOW_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                 IMPORT_ERROR="${IMPORT_ERROR}($WORKFLOW_URL) for detailed error information."
