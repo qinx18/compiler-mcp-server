@@ -60,7 +60,7 @@ jobs:
           else
             echo "❌ Strategy 1 failed, trying Strategy 2..."
             
-            # Strategy 2: Install specific compatible versions
+            # Strategy 2: Install specific compatible versions and try to get a working resolver
             echo "🔄 Strategy 2: Installing with pinned versions..."
             pip install --force-reinstall \
               "pydantic>=2.0,<3.0" \
@@ -70,9 +70,11 @@ jobs:
               "rich>=12.0.0" \
               "pandas>=2.0.0" \
               "typing-extensions>=4.0.0" \
-              "aiohttp>=3.8.0"
+              "aiohttp>=3.8.0" \
+              "termcolor>=1.1.0"
             
-            if pip install --no-deps openhands-resolver; then
+            # Try to install openhands-resolver with all dependencies
+            if pip install openhands-resolver; then
               # Verify the installation actually works
               echo "🔍 Verifying Strategy 2 installation..."
               echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"
@@ -80,19 +82,33 @@ jobs:
               echo "  Module import test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
               echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
               
-              # For standard resolver, we need at least one of the Python import methods that resolver selection will use
-              # Test the same import paths that resolver selection logic uses (lines 275, 282)
-              if python -c "import openhands_resolver.resolve_issue" 2>/dev/null || python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
-                if command -v openhands-resolver >/dev/null 2>&1; then
-                  echo "✅ Strategy 2 succeeded and verified (command and resolver imports work)"
-                else
-                  echo "✅ Strategy 2 succeeded and verified (resolver imports work, command not available)"
-                fi
+              # Check if we have a working resolver interface
+              # The resolver selection logic can work with: command, module import, direct import, or simple fallback
+              RESOLVER_INTERFACES_AVAILABLE=false
+              
+              # Check command line interface
+              if command -v openhands-resolver >/dev/null 2>&1; then
+                echo "✅ Command line interface available"
+                RESOLVER_INTERFACES_AVAILABLE=true
+              fi
+              
+              # Check Python module interfaces (used by resolver selection logic)
+              if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
+                echo "✅ Module import interface available"
+                RESOLVER_INTERFACES_AVAILABLE=true
+              elif python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
+                echo "✅ Direct import interface available"
+                RESOLVER_INTERFACES_AVAILABLE=true
+              fi
+              
+              # If any interface works, consider it a success
+              if [ "$RESOLVER_INTERFACES_AVAILABLE" = true ]; then
+                echo "✅ Strategy 2 succeeded and verified (at least one resolver interface works)"
                 INSTALL_SUCCESS=true
                 echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
               else
-                echo "⚠️ Strategy 2 installed but verification failed (resolver imports required), trying Strategy 3..."
-                echo "   Note: Basic 'import openhands_resolver' might work, but resolver selection needs 'resolve_issue' module"
+                echo "⚠️ Strategy 2 installed but verification failed (no working resolver interfaces), trying Strategy 3..."
+                echo "   Note: Basic 'import openhands_resolver' works, but resolver selection needs working interfaces"
                 # Don't set RESOLVER_TYPE here - let it fall through to other strategies
               fi
             else
@@ -108,19 +124,33 @@ jobs:
                 echo "  Module import test: $(python -c "import openhands_resolver.resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
                 echo "  Direct import test: $(python -c "from openhands_resolver import resolve_issue" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
                 
-                # For standard resolver, we need at least one of the Python import methods that resolver selection will use
-                # Test the same import paths that resolver selection logic uses (lines 275, 282)
-                if python -c "import openhands_resolver.resolve_issue" 2>/dev/null || python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
-                  if command -v openhands-resolver >/dev/null 2>&1; then
-                    echo "✅ Strategy 3 succeeded and verified (command and resolver imports work)"
-                  else
-                    echo "✅ Strategy 3 succeeded and verified (resolver imports work, command not available)"
-                  fi
+                # Check if we have a working resolver interface
+                # The resolver selection logic can work with: command, module import, direct import, or simple fallback
+                RESOLVER_INTERFACES_AVAILABLE=false
+                
+                # Check command line interface
+                if command -v openhands-resolver >/dev/null 2>&1; then
+                  echo "✅ Command line interface available"
+                  RESOLVER_INTERFACES_AVAILABLE=true
+                fi
+                
+                # Check Python module interfaces (used by resolver selection logic)
+                if python -c "import openhands_resolver.resolve_issue" 2>/dev/null; then
+                  echo "✅ Module import interface available"
+                  RESOLVER_INTERFACES_AVAILABLE=true
+                elif python -c "from openhands_resolver import resolve_issue" 2>/dev/null; then
+                  echo "✅ Direct import interface available"
+                  RESOLVER_INTERFACES_AVAILABLE=true
+                fi
+                
+                # If any interface works, consider it a success
+                if [ "$RESOLVER_INTERFACES_AVAILABLE" = true ]; then
+                  echo "✅ Strategy 3 succeeded and verified (at least one resolver interface works)"
                   INSTALL_SUCCESS=true
                   echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
                 else
-                  echo "⚠️ Strategy 3 installed but verification failed (resolver imports required), trying Strategy 4..."
-                  echo "   Note: Basic 'import openhands_resolver' might work, but resolver selection needs 'resolve_issue' module"
+                  echo "⚠️ Strategy 3 installed but verification failed (no working resolver interfaces), trying Strategy 4..."
+                  echo "   Note: Basic 'import openhands_resolver' works, but resolver selection needs working interfaces"
                   # Don't set RESOLVER_TYPE here - let it fall through to Strategy 4
                 fi
               else
