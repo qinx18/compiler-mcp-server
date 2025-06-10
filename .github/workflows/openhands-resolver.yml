@@ -51,30 +51,27 @@ jobs:
           # Try multiple installation strategies
           INSTALL_SUCCESS=false
           
-          # Strategy 1: Use conda-forge approach (install from source)
-          echo "🔄 Strategy 1: Installing from PyPI with dependency resolution..."
-          if pip install --upgrade --force-reinstall openhands-resolver; then
-            echo "✅ Strategy 1 succeeded"
-            INSTALL_SUCCESS=true
-            echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
+          # Strategy 1: Install latest openhands-resolver with dependency workarounds
+          echo "🔄 Strategy 1: Installing latest openhands-resolver with dependency fixes..."
+          # Try installing without the problematic openhands-ai dependency first
+          if pip install --no-deps openhands-resolver && \
+             pip install "pandas>=2.2.3" "pytest>=8.3.3" termcolor pydantic requests click rich litellm openai anthropic; then
+            # Test if the resolver actually works
+            if python -c "import openhands_resolver; print('✅ Basic import works')" 2>/dev/null; then
+              echo "✅ Strategy 1 succeeded (resolver installed without full openhands-ai)"
+              INSTALL_SUCCESS=true
+              echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
+            else
+              echo "❌ Strategy 1 failed - resolver import failed"
+            fi
           else
             echo "❌ Strategy 1 failed, trying Strategy 2..."
             
-            # Strategy 2: Install specific compatible versions and try to get a working resolver
-            echo "🔄 Strategy 2: Installing with pinned versions..."
-            pip install --force-reinstall \
-              "pydantic>=2.0,<3.0" \
-              "litellm>=1.0,<2.0" \
-              "requests>=2.25.0" \
-              "click>=8.0.0" \
-              "rich>=12.0.0" \
-              "pandas>=2.0.0" \
-              "typing-extensions>=4.0.0" \
-              "aiohttp>=3.8.0" \
-              "termcolor>=1.1.0"
-            
-            # Try to install openhands-resolver with all dependencies
-            if pip install openhands-resolver; then
+            # Strategy 2: Try installing older compatible version of openhands-resolver
+            echo "🔄 Strategy 2: Installing older compatible openhands-resolver version..."
+            # Try installing an older version that might not have the e2b dependency issue
+            if pip install "openhands-resolver<0.2.0" --no-deps && \
+               pip install "pandas>=2.2.3" "pytest>=8.3.3" termcolor pydantic requests click rich litellm openai anthropic; then
               # Verify the installation actually works
               echo "🔍 Verifying Strategy 2 installation..."
               echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"
@@ -114,9 +111,11 @@ jobs:
             else
               echo "❌ Strategy 2 failed, trying Strategy 3..."
               
-              # Strategy 3: Install from GitHub directly
+              # Strategy 3: Install from GitHub directly (fixed path)
               echo "🔄 Strategy 3: Installing from GitHub source..."
-              if pip install git+https://github.com/All-Hands-AI/OpenHands.git#subdirectory=openhands/resolver; then
+              # Install the main OpenHands package from GitHub, then extract just the resolver
+              if pip install git+https://github.com/All-Hands-AI/OpenHands.git --no-deps && \
+                 pip install "pandas>=2.2.3" "pytest>=8.3.3" termcolor pydantic requests click rich litellm openai anthropic; then
                 # Verify the installation actually works
                 echo "🔍 Verifying Strategy 3 installation..."
                 echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"
@@ -156,18 +155,23 @@ jobs:
               else
                 echo "❌ Strategy 3 failed, trying Strategy 4..."
                 
-                # Strategy 4: Use alternative resolver implementation
-                echo "🔄 Strategy 4: Using alternative resolver approach..."
-                pip install requests openai anthropic litellm
+                # Strategy 4: Last resort - use simple resolver fallback
+                echo "🔄 Strategy 4: Last resort - using simple resolver fallback..."
+                echo "⚠️ All standard resolver installation methods failed"
+                echo "   This may be due to dependency conflicts or package availability issues"
+                
+                # Install basic dependencies for simple resolver
+                pip install requests openai anthropic litellm termcolor
                 
                 # Ensure simple resolver is available and executable
                 if [ -f "simple_resolver.py" ]; then
                   chmod +x simple_resolver.py
-                  echo "✅ Strategy 4 succeeded - using simple resolver"
+                  echo "✅ Strategy 4 succeeded - using simple resolver as fallback"
                   INSTALL_SUCCESS=true
                   echo "RESOLVER_TYPE=simple" >> $GITHUB_ENV
                 else
                   echo "❌ Strategy 4 failed - simple_resolver.py not found"
+                  echo "   No resolver options available"
                 fi
               fi
             fi
