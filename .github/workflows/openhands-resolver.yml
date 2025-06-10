@@ -78,12 +78,13 @@ jobs:
               echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"
               echo "  Import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
               
-              if command -v openhands-resolver >/dev/null 2>&1 || python -c "import openhands_resolver" 2>/dev/null; then
-                echo "✅ Strategy 2 succeeded and verified"
+              # For standard resolver to work properly, we need BOTH command AND import to work
+              if command -v openhands-resolver >/dev/null 2>&1 && python -c "import openhands_resolver" 2>/dev/null; then
+                echo "✅ Strategy 2 succeeded and verified (both command and import work)"
                 INSTALL_SUCCESS=true
                 echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
               else
-                echo "⚠️ Strategy 2 installed but verification failed, trying Strategy 3..."
+                echo "⚠️ Strategy 2 installed but verification failed (need both command and import), trying Strategy 3..."
                 # Don't set RESOLVER_TYPE here - let it fall through to other strategies
               fi
             else
@@ -92,9 +93,20 @@ jobs:
               # Strategy 3: Install from GitHub directly
               echo "🔄 Strategy 3: Installing from GitHub source..."
               if pip install git+https://github.com/All-Hands-AI/OpenHands.git#subdirectory=openhands/resolver; then
-                echo "✅ Strategy 3 succeeded"
-                INSTALL_SUCCESS=true
-                echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
+                # Verify the installation actually works
+                echo "🔍 Verifying Strategy 3 installation..."
+                echo "  Command test: $(command -v openhands-resolver >/dev/null 2>&1 && echo 'PASS' || echo 'FAIL')"
+                echo "  Import test: $(python -c "import openhands_resolver" 2>/dev/null && echo 'PASS' || echo 'FAIL')"
+                
+                # For standard resolver to work properly, we need BOTH command AND import to work
+                if command -v openhands-resolver >/dev/null 2>&1 && python -c "import openhands_resolver" 2>/dev/null; then
+                  echo "✅ Strategy 3 succeeded and verified (both command and import work)"
+                  INSTALL_SUCCESS=true
+                  echo "RESOLVER_TYPE=standard" >> $GITHUB_ENV
+                else
+                  echo "⚠️ Strategy 3 installed but verification failed (need both command and import), trying Strategy 4..."
+                  # Don't set RESOLVER_TYPE here - let it fall through to Strategy 4
+                fi
               else
                 echo "❌ Strategy 3 failed, trying Strategy 4..."
                 
